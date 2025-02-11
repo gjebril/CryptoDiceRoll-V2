@@ -87,8 +87,8 @@ export default function GameSlider({
             className="h-2 w-full"
             style={{
               background: isOver
-                ? "linear-gradient(to right, #ef4444, #22c55e)"
-                : "linear-gradient(to right, #22c55e, #ef4444)"
+                ? "linear-gradient(to right, #1a1f24, #4CAF50)"
+                : "linear-gradient(to right, #4CAF50, #1a1f24)"
             }}
           />
         </div>

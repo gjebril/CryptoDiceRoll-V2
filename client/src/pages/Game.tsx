@@ -90,7 +90,8 @@ export default function Game() {
         const shouldStop =
           (autoBetSettings.stopOnProfit && new Decimal(state.currentProfit).gte(autoBetSettings.stopOnProfit)) ||
           (autoBetSettings.stopOnLoss && new Decimal(state.currentProfit).lte(-autoBetSettings.stopOnLoss)) ||
-          (autoBetSettings.numberOfBets && state.betsPlaced >= autoBetSettings.numberOfBets);
+          (autoBetSettings.numberOfBets && state.betsPlaced >= autoBetSettings.numberOfBets) ||
+          new Decimal(nextBet).gt(autoBetSettings.maxBet);
 
         if (shouldStop) {
           setIsAutoBetting(false);
@@ -100,7 +101,11 @@ export default function Game() {
           });
         } else {
           setBetAmount(nextBet);
-          setTimeout(() => placeBet.mutate(), autoBetSettings.delayBetweenBets);
+          setTimeout(() => {
+            if (isAutoBetting) {
+              placeBet.mutate();
+            }
+          }, autoBetSettings.delayBetweenBets);
         }
       }
 
@@ -126,17 +131,30 @@ export default function Game() {
   const handleStartStopAutoBet = useCallback(() => {
     if (isAutoBetting) {
       setIsAutoBetting(false);
+      if (placeBet.isPending) {
+        placeBet.reset();
+      }
     } else {
+      if (autoBetSettings.baseBet <= 0) {
+        toast({
+          title: "Error",
+          description: "Base bet amount must be greater than 0",
+          variant: "destructive",
+        });
+        return;
+      }
+
       autoBetStateRef.current = {
         betsPlaced: 0,
         startingBalance: balance,
         currentProfit: "0",
       };
+
       setBetAmount(autoBetSettings.baseBet);
       setIsAutoBetting(true);
       placeBet.mutate();
     }
-  }, [isAutoBetting, balance, autoBetSettings.baseBet]);
+  }, [isAutoBetting, balance, autoBetSettings.baseBet, placeBet]);
 
   return (
     <div className="min-h-screen bg-[#0f1419] text-white">
@@ -159,7 +177,12 @@ export default function Game() {
           <div className="w-[320px] bg-[#1a1f24] rounded-lg">
             <div className="flex items-center gap-2 p-3 border-b border-[#2A2F34]">
               <button
-                onClick={() => setIsAutoBetting(false)}
+                onClick={() => {
+                  setIsAutoBetting(false);
+                  if (placeBet.isPending) {
+                    placeBet.reset();
+                  }
+                }}
                 className={`px-4 py-2 rounded-md text-sm ${
                   !isAutoBetting
                     ? "bg-[#2A2F34] text-white"

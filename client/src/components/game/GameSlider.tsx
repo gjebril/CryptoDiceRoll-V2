@@ -116,31 +116,6 @@ export default function GameSlider({
         <span>100</span>
       </div>
 
-      <div className="flex gap-2">
-        <button
-          onClick={() => setIsOver(false)}
-          className={cn(
-            "flex-1 h-12 text-lg font-medium rounded-lg transition-colors",
-            !isOver
-              ? "bg-red-500/20 text-red-500"
-              : "bg-[#1A1F24] hover:bg-[#2A2F34]"
-          )}
-        >
-          Roll Under
-        </button>
-        <button
-          onClick={() => setIsOver(true)}
-          className={cn(
-            "flex-1 h-12 text-lg font-medium rounded-lg transition-colors",
-            isOver
-              ? "bg-green-500/20 text-green-500"
-              : "bg-[#1A1F24] hover:bg-[#2A2F34]"
-          )}
-        >
-          Roll Over
-        </button>
-      </div>
-
       {/* Stats Display */}
       <div className="grid grid-cols-3 gap-4 mt-6">
         <div>
@@ -152,8 +127,17 @@ export default function GameSlider({
             className="bg-[#1A1F24] border-[#2A2F34]"
           />
         </div>
-        <div>
-          <div className="text-sm text-gray-400 mb-1">Roll {isOver ? "Over" : "Under"}</div>
+        <div className="flex flex-col">
+          <div className="text-sm text-gray-400 mb-1">
+            <select
+              value={isOver ? "over" : "under"}
+              onChange={(e) => setIsOver(e.target.value === "over")}
+              className="bg-transparent border-none focus:outline-none"
+            >
+              <option value="under">Roll Under</option>
+              <option value="over">Roll Over</option>
+            </select>
+          </div>
           <div className="flex gap-2">
             <Input
               type="text"
@@ -170,7 +154,7 @@ export default function GameSlider({
           </div>
         </div>
         <div>
-          <div className="text-sm text-gray-400 mb-1">Win Chance</div>
+          <div className="text-sm text-gray-400 mb-1">Chance</div>
           <div className="flex items-center h-10">
             <span className="text-base font-medium">
               {calculateWinChance(value, isOver)}%

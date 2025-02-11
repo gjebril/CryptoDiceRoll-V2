@@ -1,26 +1,49 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
 import ResultDisplay from "@/components/game/ResultDisplay";
 import GameHistory from "@/components/game/GameHistory";
 import ProvablyFair from "@/components/game/ProvablyFair";
+import AutoBetSettings from "@/components/game/AutoBetSettings";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { generateClientSeed } from "@/lib/provablyFair";
+import { calculateNextBet } from "@/lib/autoBetStrategies";
+import type { AutoBetSettings as AutoBetSettingsType } from "@shared/schema";
+import { Decimal } from "decimal.js";
 
 export default function Game() {
   const [balance, setBalance] = useState("1000");
   const [betAmount, setBetAmount] = useState(0);
   const [targetValue, setTargetValue] = useState(50);
   const [isOver, setIsOver] = useState(true);
-  const [isAuto, setIsAuto] = useState(false);
   const [lastRoll, setLastRoll] = useState<number | null>(null);
   const [lastWon, setLastWon] = useState<boolean | null>(null);
   const [currentClientSeed, setCurrentClientSeed] = useState(generateClientSeed());
   const [lastServerSeed, setLastServerSeed] = useState<string | null>(null);
   const [currentServerSeedHash, setCurrentServerSeedHash] = useState<string | null>(null);
+
+  // Auto betting state
+  const [isAutoBetting, setIsAutoBetting] = useState(false);
+  const [autoBetSettings, setAutoBetSettings] = useState<AutoBetSettingsType>({
+    enabled: false,
+    strategy: "martingale",
+    baseBet: 0.00000100,
+    maxBet: 0.00100000,
+    delayBetweenBets: 1000,
+    multiplier: 2, //Added multiplier for martingale strategy
+    stopOnProfit: null,
+    stopOnLoss: null,
+    numberOfBets: null,
+  });
+
+  const autoBetStateRef = useRef({
+    betsPlaced: 0,
+    startingBalance: "0",
+    currentProfit: "0",
+  });
 
   const { toast } = useToast();
 
@@ -39,23 +62,61 @@ export default function Game() {
       return res.json();
     },
     onSuccess: (data) => {
-      setBalance(data.newBalance);
+      const oldBalance = new Decimal(balance);
+      const newBalance = new Decimal(data.newBalance);
+      const won = data.game.won;
+
+      setBalance(newBalance.toString());
       setLastRoll(parseFloat(data.game.roll));
-      setLastWon(data.game.won);
+      setLastWon(won);
       setLastServerSeed(data.serverSeed);
       setCurrentServerSeedHash(data.serverSeedHash);
-      setCurrentClientSeed(generateClientSeed()); // Generate new client seed for next bet
+      setCurrentClientSeed(generateClientSeed());
+
+      // Update auto betting state if active
+      if (isAutoBetting) {
+        const state = autoBetStateRef.current;
+        state.betsPlaced += 1;
+        state.currentProfit = newBalance.minus(state.startingBalance).toString();
+
+        const nextBet = calculateNextBet(
+          autoBetSettings.strategy,
+          autoBetSettings.baseBet,
+          betAmount,
+          autoBetSettings.maxBet,
+          won,
+          autoBetSettings.multiplier
+        );
+
+        // Check stop conditions
+        const shouldStop = 
+          (autoBetSettings.stopOnProfit && new Decimal(state.currentProfit).gte(autoBetSettings.stopOnProfit)) ||
+          (autoBetSettings.stopOnLoss && new Decimal(state.currentProfit).lte(-autoBetSettings.stopOnLoss)) ||
+          (autoBetSettings.numberOfBets && state.betsPlaced >= autoBetSettings.numberOfBets);
+
+        if (shouldStop) {
+          setIsAutoBetting(false);
+          toast({
+            title: "Auto Betting Stopped",
+            description: `Final profit: ${state.currentProfit}`,
+          });
+        } else {
+          setBetAmount(nextBet);
+          setTimeout(() => placeBet.mutate(), autoBetSettings.delayBetweenBets);
+        }
+      }
 
       // Invalidate games query to refresh history
       queryClient.invalidateQueries({ queryKey: ['/api/games/1'] });
 
       toast({
-        title: data.game.won ? "You Won!" : "You Lost",
+        title: won ? "You Won!" : "You Lost",
         description: `Roll: ${parseFloat(data.game.roll).toFixed(2)}`,
-        variant: data.game.won ? "default" : "destructive",
+        variant: won ? "default" : "destructive",
       });
     },
     onError: (error: Error) => {
+      setIsAutoBetting(false);
       toast({
         title: "Error",
         description: error.message,
@@ -63,6 +124,21 @@ export default function Game() {
       });
     }
   });
+
+  const handleStartStopAutoBet = () => {
+    if (isAutoBetting) {
+      setIsAutoBetting(false);
+    } else {
+      autoBetStateRef.current = {
+        betsPlaced: 0,
+        startingBalance: balance,
+        currentProfit: "0",
+      };
+      setBetAmount(autoBetSettings.baseBet);
+      setIsAutoBetting(true);
+      placeBet.mutate();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
@@ -85,16 +161,25 @@ export default function Game() {
           setIsOver={setIsOver}
         />
 
-        <BetControls
-          betAmount={betAmount}
-          setBetAmount={setBetAmount}
-          isAuto={isAuto}
-          setIsAuto={setIsAuto}
-          onBet={() => placeBet.mutate()}
-          isLoading={placeBet.isPending}
-          targetValue={targetValue}
-          isOver={isOver}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <BetControls
+            betAmount={betAmount}
+            setBetAmount={setBetAmount}
+            isAuto={false}
+            setIsAuto={() => {}}
+            onBet={() => placeBet.mutate()}
+            isLoading={placeBet.isPending}
+            targetValue={targetValue}
+            isOver={isOver}
+          />
+
+          <AutoBetSettings
+            settings={autoBetSettings}
+            onSettingsChange={setAutoBetSettings}
+            isRunning={isAutoBetting}
+            onStartStop={handleStartStopAutoBet}
+          />
+        </div>
 
         <ProvablyFair
           clientSeed={currentClientSeed}

@@ -35,7 +35,28 @@ export const placeBetSchema = z.object({
   clientSeed: z.string(),
 });
 
+export const autoBetStrategySchema = z.enum([
+  "martingale",
+  "reverseMartingale",
+  "dAlembert",
+  "custom"
+]);
+
+export const autoBetSettingsSchema = z.object({
+  enabled: z.boolean(),
+  strategy: autoBetStrategySchema,
+  baseBet: z.number().positive(),
+  maxBet: z.number().positive(),
+  stopOnProfit: z.number().optional(),
+  stopOnLoss: z.number().optional(),
+  numberOfBets: z.number().int().positive().optional(),
+  multiplier: z.number().positive().optional(),
+  delayBetweenBets: z.number().int().min(500).max(10000),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Game = typeof games.$inferSelect;
 export type PlaceBet = z.infer<typeof placeBetSchema>;
+export type AutoBetStrategy = z.infer<typeof autoBetStrategySchema>;
+export type AutoBetSettings = z.infer<typeof autoBetSettingsSchema>;

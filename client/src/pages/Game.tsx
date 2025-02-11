@@ -87,7 +87,7 @@ export default function Game() {
         );
 
         // Check stop conditions
-        const shouldStop = 
+        const shouldStop =
           (autoBetSettings.stopOnProfit && new Decimal(state.currentProfit).gte(autoBetSettings.stopOnProfit)) ||
           (autoBetSettings.stopOnLoss && new Decimal(state.currentProfit).lte(-autoBetSettings.stopOnLoss)) ||
           (autoBetSettings.numberOfBets && state.betsPlaced >= autoBetSettings.numberOfBets);
@@ -206,13 +206,15 @@ export default function Game() {
           {/* Main Content */}
           <div className="flex-1 space-y-6">
             <div className="bg-[#1a1f24] rounded-lg p-6">
-              <GameSlider 
-                value={targetValue} 
+              <GameSlider
+                value={targetValue}
                 onChange={setTargetValue}
                 isOver={isOver}
                 setIsOver={setIsOver}
                 roll={lastRoll}
                 won={lastWon}
+                multiplier={(99 / (isOver ? (99 - targetValue) : targetValue)).toFixed(4)}
+                chance={(isOver ? (99 - targetValue) : targetValue).toFixed(4)}
               />
             </div>
 

@@ -9,6 +9,8 @@ interface GameSliderProps {
   setIsOver: (over: boolean) => void;
   roll: number | null;
   won: boolean | null;
+  multiplier: string;
+  chance: string;
 }
 
 export default function GameSlider({
@@ -18,6 +20,8 @@ export default function GameSlider({
   setIsOver,
   roll,
   won,
+  multiplier,
+  chance,
 }: GameSliderProps) {
   return (
     <div>
@@ -95,6 +99,22 @@ export default function GameSlider({
         >
           Roll Over
         </button>
+      </div>
+
+      {/* Stats Display */}
+      <div className="grid grid-cols-3 gap-4 mt-6 bg-[#1A1F24] p-4 rounded-lg">
+        <div>
+          <div className="text-sm text-gray-400">Multiplier</div>
+          <div className="text-base font-medium mt-1">{multiplier}×</div>
+        </div>
+        <div>
+          <div className="text-sm text-gray-400">Roll {isOver ? "Over" : "Under"}</div>
+          <div className="text-base font-medium mt-1">{value.toFixed(2)}</div>
+        </div>
+        <div>
+          <div className="text-sm text-gray-400">Win Chance</div>
+          <div className="text-base font-medium mt-1">{chance}%</div>
+        </div>
       </div>
     </div>
   );

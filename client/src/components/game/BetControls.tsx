@@ -10,8 +10,6 @@ interface BetControlsProps {
   setIsAuto: (auto: boolean) => void;
   onBet: () => void;
   isLoading: boolean;
-  targetValue: number;
-  isOver: boolean;
 }
 
 export default function BetControls({
@@ -21,8 +19,6 @@ export default function BetControls({
   setIsAuto,
   onBet,
   isLoading,
-  targetValue,
-  isOver,
 }: BetControlsProps) {
   const [inputValue, setInputValue] = useState(betAmount.toString());
 
@@ -38,9 +34,6 @@ export default function BetControls({
       setBetAmount(numericValue);
     }
   };
-
-  const multiplier = (99 / (isOver ? (99 - targetValue) : targetValue)).toFixed(4);
-  const profit = (betAmount * parseFloat(multiplier) - betAmount).toFixed(8);
 
   return (
     <div className="space-y-4">
@@ -78,27 +71,10 @@ export default function BetControls({
         <Label className="text-sm text-gray-400">Profit on Win</Label>
         <Input
           type="text"
-          value={profit}
+          value={(betAmount * 2).toFixed(8)}
           readOnly
           className="h-10 bg-[#1A1F24] border-[#2A2F34] text-sm mt-1"
         />
-      </div>
-
-      <div className="grid grid-cols-3 gap-4 mt-4">
-        <div>
-          <div className="text-xs text-gray-400">Multiplier</div>
-          <div className="text-sm font-medium mt-1">{multiplier}×</div>
-        </div>
-        <div>
-          <div className="text-xs text-gray-400">Roll {isOver ? "Over" : "Under"}</div>
-          <div className="text-sm font-medium mt-1">{targetValue.toFixed(2)}</div>
-        </div>
-        <div>
-          <div className="text-xs text-gray-400">Win Chance</div>
-          <div className="text-sm font-medium mt-1">
-            {(isOver ? (99 - targetValue) : targetValue).toFixed(4)}%
-          </div>
-        </div>
       </div>
 
       <Button 

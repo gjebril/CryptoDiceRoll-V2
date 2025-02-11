@@ -33,10 +33,10 @@ export default function Game() {
     baseBet: 0.00000100,
     maxBet: 0.00100000,
     delayBetweenBets: 1000,
-    multiplier: 2, //Added multiplier for martingale strategy
-    stopOnProfit: null,
-    stopOnLoss: null,
-    numberOfBets: null,
+    multiplier: 2,
+    stopOnProfit: undefined,
+    stopOnLoss: undefined,
+    numberOfBets: undefined
   });
 
   const autoBetStateRef = useRef({

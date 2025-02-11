@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
 import GameHistory from "@/components/game/GameHistory";
@@ -47,10 +47,20 @@ export default function Game() {
     betsPlaced: 0,
     startingBalance: "0",
     currentProfit: "0",
-    strategyState: autoBetSettings.strategyState
+    strategyState: autoBetSettings.strategyState,
+    timeoutId: null as NodeJS.Timeout | null
   });
 
   const { toast } = useToast();
+
+  // Cleanup function to clear any pending timeouts
+  const cleanupAutoBetting = useCallback(() => {
+    if (autoBetStateRef.current.timeoutId) {
+      clearTimeout(autoBetStateRef.current.timeoutId);
+      autoBetStateRef.current.timeoutId = null;
+    }
+    setIsAutoBetting(false);
+  }, []);
 
   const placeBet = useMutation({
     mutationFn: async () => {
@@ -105,14 +115,15 @@ export default function Game() {
           new Decimal(result.nextBet).gt(autoBetSettings.maxBet);
 
         if (shouldStop) {
-          setIsAutoBetting(false);
+          cleanupAutoBetting();
           toast({
             title: "Auto Betting Stopped",
             description: `Final profit: ${state.currentProfit}`,
           });
         } else {
           setBetAmount(result.nextBet);
-          setTimeout(() => {
+          // Schedule next bet
+          state.timeoutId = setTimeout(() => {
             if (isAutoBetting) {
               placeBet.mutate();
             }
@@ -130,7 +141,7 @@ export default function Game() {
       });
     },
     onError: (error: Error) => {
-      setIsAutoBetting(false);
+      cleanupAutoBetting();
       toast({
         title: "Error",
         description: error.message,
@@ -139,12 +150,16 @@ export default function Game() {
     }
   });
 
+  // Component cleanup
+  useEffect(() => {
+    return () => {
+      cleanupAutoBetting();
+    };
+  }, [cleanupAutoBetting]);
+
   const handleStartStopAutoBet = useCallback(() => {
     if (isAutoBetting) {
-      setIsAutoBetting(false);
-      if (placeBet.isPending) {
-        placeBet.reset();
-      }
+      cleanupAutoBetting();
     } else {
       if (autoBetSettings.baseBet <= 0) {
         toast({
@@ -155,19 +170,26 @@ export default function Game() {
         return;
       }
 
-      // Initialize auto bet state with fresh strategy state
+      // Initialize auto bet state
       autoBetStateRef.current = {
         betsPlaced: 0,
         startingBalance: balance,
         currentProfit: "0",
-        strategyState: { ...autoBetSettings.strategyState} //This line was added.
+        strategyState: { ...autoBetSettings.strategyState },
+        timeoutId: null
       };
 
       setBetAmount(autoBetSettings.baseBet);
       setIsAutoBetting(true);
-      placeBet.mutate();
+
+      // Start the first bet after a short delay
+      autoBetStateRef.current.timeoutId = setTimeout(() => {
+        if (isAutoBetting) {
+          placeBet.mutate();
+        }
+      }, 100);
     }
-  }, [isAutoBetting, balance, autoBetSettings.baseBet, placeBet]);
+  }, [isAutoBetting, balance, autoBetSettings.baseBet, placeBet, toast, cleanupAutoBetting]);
 
   return (
     <div className="min-h-screen bg-[#0f1419] text-white">
@@ -192,10 +214,7 @@ export default function Game() {
                 onClick={() => {
                   if (isAutoMode) {
                     setIsAutoMode(false);
-                    setIsAutoBetting(false);
-                    if (placeBet.isPending) {
-                      placeBet.reset();
-                    }
+                    cleanupAutoBetting();
                   }
                 }}
                 className={`px-4 py-2 rounded-md text-sm ${

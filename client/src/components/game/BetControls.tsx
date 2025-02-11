@@ -44,22 +44,17 @@ export default function BetControls({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <div className="flex-1">
-          <div className="mb-2">
-            <Label className="text-sm text-gray-400">Bet Amount</Label>
-            <div className="text-xs text-gray-500">${(betAmount * 1000).toFixed(2)}</div>
-          </div>
+      <div>
+        <Label className="text-sm text-gray-400">Bet Amount</Label>
+        <div className="flex gap-2 mt-1">
           <Input
             type="text"
             value={inputValue}
             onChange={handleInputChange}
-            className="text-base h-10 bg-[#1A1F24] border-[#2A2F34]"
+            className="flex-1 h-10 bg-[#1A1F24] border-[#2A2F34] text-sm"
             disabled={isLoading}
             placeholder="0.00000000"
           />
-        </div>
-        <div className="flex gap-2">
           <Button 
             variant="outline" 
             onClick={() => setBetAmount(betAmount / 2)}
@@ -85,22 +80,22 @@ export default function BetControls({
           type="text"
           value={profit}
           readOnly
-          className="text-base h-10 bg-[#1A1F24] border-[#2A2F34]"
+          className="h-10 bg-[#1A1F24] border-[#2A2F34] text-sm mt-1"
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-4 p-4 bg-[#1A1F24] rounded-lg">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         <div>
-          <div className="text-sm text-gray-400">Multiplier</div>
-          <div className="text-base font-medium">{multiplier}×</div>
+          <div className="text-xs text-gray-400">Multiplier</div>
+          <div className="text-sm font-medium mt-1">{multiplier}×</div>
         </div>
         <div>
-          <div className="text-sm text-gray-400">Roll {isOver ? "Over" : "Under"}</div>
-          <div className="text-base font-medium">{targetValue.toFixed(2)}</div>
+          <div className="text-xs text-gray-400">Roll {isOver ? "Over" : "Under"}</div>
+          <div className="text-sm font-medium mt-1">{targetValue.toFixed(2)}</div>
         </div>
         <div>
-          <div className="text-sm text-gray-400">Win Chance</div>
-          <div className="text-base font-medium">
+          <div className="text-xs text-gray-400">Win Chance</div>
+          <div className="text-sm font-medium mt-1">
             {(isOver ? (99 - targetValue) : targetValue).toFixed(4)}%
           </div>
         </div>
@@ -109,7 +104,7 @@ export default function BetControls({
       <Button 
         onClick={onBet}
         disabled={isLoading || betAmount <= 0}
-        className="w-full h-12 text-lg font-medium bg-[#4CAF50] hover:bg-[#45a049]"
+        className="w-full h-12 text-lg font-medium bg-[#4CAF50] hover:bg-[#45a049] mt-4"
       >
         {isLoading ? "Rolling..." : "Bet"}
       </Button>

@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
 import GameHistory from "@/components/game/GameHistory";
@@ -141,7 +140,7 @@ export default function Game() {
 
   return (
     <div className="min-h-screen bg-[#0f1419] text-white">
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="p-6">
         <div className="mb-8 flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold text-green-500">${parseFloat(balance).toFixed(2)}</h2>
@@ -155,8 +154,9 @@ export default function Game() {
           />
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-[#1a1f24] rounded-lg">
+        <div className="flex gap-6">
+          {/* Left Panel */}
+          <div className="w-[320px] bg-[#1a1f24] rounded-lg">
             <div className="flex items-center gap-2 p-3 border-b border-[#2A2F34]">
               <button
                 onClick={() => setIsAutoBetting(false)}
@@ -203,19 +203,22 @@ export default function Game() {
             </div>
           </div>
 
-          <div className="bg-[#1a1f24] rounded-lg p-6">
-            <GameSlider 
-              value={targetValue} 
-              onChange={setTargetValue}
-              isOver={isOver}
-              setIsOver={setIsOver}
-              roll={lastRoll}
-              won={lastWon}
-            />
-          </div>
+          {/* Main Content */}
+          <div className="flex-1 space-y-6">
+            <div className="bg-[#1a1f24] rounded-lg p-6">
+              <GameSlider 
+                value={targetValue} 
+                onChange={setTargetValue}
+                isOver={isOver}
+                setIsOver={setIsOver}
+                roll={lastRoll}
+                won={lastWon}
+              />
+            </div>
 
-          <div className="bg-[#1a1f24] rounded-lg p-6">
-            <GameHistory userId={1} />
+            <div className="bg-[#1a1f24] rounded-lg p-6">
+              <GameHistory userId={1} />
+            </div>
           </div>
         </div>
       </div>

@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import type { AutoBetSettings, AutoBetStrategy } from "@shared/schema";
 
 interface AutoBetSettingsProps {
@@ -29,9 +28,28 @@ export default function AutoBetSettings({
     onSettingsChange({ ...settings, ...updates });
   };
 
+  const getStrategyDescription = (strategy: AutoBetStrategy) => {
+    switch (strategy) {
+      case "martingale":
+        return "Double bet after each loss, reset to base bet after win";
+      case "reverseMartingale":
+        return "Double bet after each win, reset to base bet after loss";
+      case "dAlembert":
+        return "Increase bet by one unit after loss, decrease by one unit after win";
+      case "fibonacci":
+        return "Use Fibonacci sequence for bet progression, move back two steps after win";
+      case "oscarsGrind":
+        return "Aim for one unit profit per series, increase bet after wins in stages";
+      case "custom":
+        return "Use custom multiplier after each loss";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div>
         <Label>Strategy</Label>
         <Select
           value={settings.strategy}
@@ -40,16 +58,21 @@ export default function AutoBetSettings({
           }
           disabled={isRunning}
         >
-          <SelectTrigger className="w-[180px] bg-[#1A1F24] border-[#2A2F34]">
+          <SelectTrigger className="w-full bg-[#1A1F24] border-[#2A2F34]">
             <SelectValue placeholder="Select strategy" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="martingale">Martingale</SelectItem>
             <SelectItem value="reverseMartingale">Reverse Martingale</SelectItem>
             <SelectItem value="dAlembert">D'Alembert</SelectItem>
+            <SelectItem value="fibonacci">Fibonacci</SelectItem>
+            <SelectItem value="oscarsGrind">Oscar's Grind</SelectItem>
             <SelectItem value="custom">Custom Multiplier</SelectItem>
           </SelectContent>
         </Select>
+        <p className="mt-1 text-sm text-gray-400">
+          {getStrategyDescription(settings.strategy)}
+        </p>
       </div>
 
       <div className="space-y-4">

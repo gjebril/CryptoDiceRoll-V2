@@ -39,6 +39,8 @@ export const autoBetStrategySchema = z.enum([
   "martingale",
   "reverseMartingale",
   "dAlembert",
+  "fibonacci",
+  "oscarsGrind",
   "custom"
 ]);
 
@@ -52,6 +54,13 @@ export const autoBetSettingsSchema = z.object({
   numberOfBets: z.number().int().positive().optional(),
   multiplier: z.number().positive().optional(),
   delayBetweenBets: z.number().int().min(500).max(10000),
+  // Strategy-specific settings
+  strategyState: z.object({
+    sequence: z.array(z.number()).optional(), // For Fibonacci
+    stage: z.number().optional(), // For Oscar's Grind
+    winStreak: z.number().optional(), // For Oscar's Grind
+    lossStreak: z.number().optional()
+  }).optional()
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

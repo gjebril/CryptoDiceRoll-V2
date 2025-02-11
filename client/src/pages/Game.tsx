@@ -34,13 +34,20 @@ export default function Game() {
     multiplier: 2,
     stopOnProfit: undefined,
     stopOnLoss: undefined,
-    numberOfBets: undefined
+    numberOfBets: undefined,
+    strategyState: {
+      sequence: [1],
+      stage: 0,
+      winStreak: 0,
+      lossStreak: 0
+    }
   });
 
   const autoBetStateRef = useRef({
     betsPlaced: 0,
     startingBalance: "0",
     currentProfit: "0",
+    strategyState: autoBetSettings.strategyState
   });
 
   const { toast } = useToast();
@@ -77,21 +84,25 @@ export default function Game() {
         state.betsPlaced += 1;
         state.currentProfit = newBalance.minus(state.startingBalance).toString();
 
-        const nextBet = calculateNextBet(
+        const result = calculateNextBet(
           autoBetSettings.strategy,
           autoBetSettings.baseBet,
           betAmount,
           autoBetSettings.maxBet,
           won,
-          autoBetSettings.multiplier
+          autoBetSettings.multiplier,
+          state.strategyState
         );
+
+        // Update strategy state
+        state.strategyState = result.newState;
 
         // Check stop conditions
         const shouldStop =
           (autoBetSettings.stopOnProfit && new Decimal(state.currentProfit).gte(autoBetSettings.stopOnProfit)) ||
           (autoBetSettings.stopOnLoss && new Decimal(state.currentProfit).lte(-autoBetSettings.stopOnLoss)) ||
           (autoBetSettings.numberOfBets && state.betsPlaced >= autoBetSettings.numberOfBets) ||
-          new Decimal(nextBet).gt(autoBetSettings.maxBet);
+          new Decimal(result.nextBet).gt(autoBetSettings.maxBet);
 
         if (shouldStop) {
           setIsAutoBetting(false);
@@ -100,7 +111,7 @@ export default function Game() {
             description: `Final profit: ${state.currentProfit}`,
           });
         } else {
-          setBetAmount(nextBet);
+          setBetAmount(result.nextBet);
           setTimeout(() => {
             if (isAutoBetting) {
               placeBet.mutate();
@@ -148,6 +159,12 @@ export default function Game() {
         betsPlaced: 0,
         startingBalance: balance,
         currentProfit: "0",
+        strategyState: {
+          sequence: [1],
+          stage: 0,
+          winStreak: 0,
+          lossStreak: 0
+        }
       };
 
       setBetAmount(autoBetSettings.baseBet);

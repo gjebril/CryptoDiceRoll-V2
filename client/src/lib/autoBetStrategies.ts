@@ -8,6 +8,13 @@ function getFibonacciNumber(sequence: number[]): number {
   return sequence[length - 1] + sequence[length - 2];
 }
 
+interface StrategyState {
+  sequence?: number[];
+  stage?: number;
+  winStreak?: number;
+  lossStreak?: number;
+}
+
 export function calculateNextBet(
   strategy: AutoBetStrategy,
   baseBet: number,
@@ -15,17 +22,12 @@ export function calculateNextBet(
   maxBet: number,
   won: boolean,
   customMultiplier?: number,
-  state?: {
-    sequence?: number[];
-    stage?: number;
-    winStreak?: number;
-    lossStreak?: number;
-  }
-): { nextBet: number; newState: any } {
+  state?: StrategyState
+): { nextBet: number; newState: StrategyState } {
   const current = new Decimal(currentBet);
   const max = new Decimal(maxBet);
   const base = new Decimal(baseBet);
-  const newState = { ...state };
+  const newState: StrategyState = state ? { ...state } : {};
 
   switch (strategy) {
     case "martingale":
@@ -87,14 +89,17 @@ export function calculateNextBet(
       };
 
     case "oscarsGrind":
-      // Initialize state
-      if (!newState.stage) {
+      // Initialize state if not exists
+      if (!newState.stage || !newState.winStreak) {
         newState.stage = 0;
         newState.winStreak = 0;
       }
 
+      const currentStage = newState.stage;
+      const currentWinStreak = newState.winStreak;
+
       if (won) {
-        newState.winStreak++;
+        newState.winStreak = currentWinStreak + 1;
         if (newState.winStreak >= 3) {
           // Reset after winning streak
           newState.stage = 0;
@@ -109,8 +114,8 @@ export function calculateNextBet(
         };
       } else {
         newState.winStreak = 0;
-        if (newState.stage < 3) {
-          newState.stage++;
+        if (currentStage < 3) {
+          newState.stage = currentStage + 1;
           // Keep same bet for first three losses
           return { nextBet: currentBet, newState };
         }

@@ -155,16 +155,12 @@ export default function Game() {
         return;
       }
 
+      // Initialize auto bet state with fresh strategy state
       autoBetStateRef.current = {
         betsPlaced: 0,
         startingBalance: balance,
         currentProfit: "0",
-        strategyState: {
-          sequence: [1],
-          stage: 0,
-          winStreak: 0,
-          lossStreak: 0
-        }
+        strategyState: { ...autoBetSettings.strategyState} //This line was added.
       };
 
       setBetAmount(autoBetSettings.baseBet);

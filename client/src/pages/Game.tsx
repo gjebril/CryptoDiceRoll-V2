@@ -216,7 +216,7 @@ export default function Game() {
                 <BetControls
                   betAmount={betAmount}
                   setBetAmount={setBetAmount}
-                  isAuto={isAutoBetting}
+                  isAuto={false}
                   setIsAuto={setIsAutoBetting}
                   onBet={() => placeBet.mutate()}
                   isLoading={placeBet.isPending}
@@ -227,7 +227,7 @@ export default function Game() {
                 <AutoBetSettings
                   settings={autoBetSettings}
                   onSettingsChange={setAutoBetSettings}
-                  isRunning={isAutoBetting && autoBetSettings.enabled}
+                  isRunning={isAutoBetting}
                   onStartStop={handleStartStopAutoBet}
                 />
               )}

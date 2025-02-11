@@ -18,15 +18,15 @@ export default function GameSlider({
     <div className="space-y-6">
       <div className="flex justify-between gap-4">
         <Button
-          variant={isOver ? "default" : "outline"}
-          className="flex-1"
+          variant={isOver ? "default" : "secondary"}
+          className="flex-1 h-12 text-lg font-medium"
           onClick={() => setIsOver(true)}
         >
           Roll Over
         </Button>
         <Button
-          variant={!isOver ? "default" : "outline"}
-          className="flex-1"
+          variant={!isOver ? "default" : "secondary"}
+          className="flex-1 h-12 text-lg font-medium"
           onClick={() => setIsOver(false)}
         >
           Roll Under

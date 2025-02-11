@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef } from "react";
-import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
@@ -142,10 +141,13 @@ export default function Game() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-screen bg-[#0f1419] text-white">
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-8 flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Balance: ${parseFloat(balance).toFixed(2)}</h2>
+          <div>
+            <h2 className="text-2xl font-bold text-white">Balance</h2>
+            <p className="text-xl font-medium text-green-500">${parseFloat(balance).toFixed(2)}</p>
+          </div>
           <ProvablyFair
             clientSeed={currentClientSeed}
             serverSeedHash={currentServerSeedHash}
@@ -162,20 +164,22 @@ export default function Game() {
           won={lastWon}
         />
 
-        <GameSlider 
-          value={targetValue} 
-          onChange={setTargetValue}
-          isOver={isOver}
-          setIsOver={setIsOver}
-        />
+        <div className="bg-[#1a1f24] rounded-lg p-6 mb-8">
+          <GameSlider 
+            value={targetValue} 
+            onChange={setTargetValue}
+            isOver={isOver}
+            setIsOver={setIsOver}
+          />
+        </div>
 
         <Tabs defaultValue="manual" className="mt-8">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="manual">Manual</TabsTrigger>
-            <TabsTrigger value="auto">Auto</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="manual" className="text-lg">Manual</TabsTrigger>
+            <TabsTrigger value="auto" className="text-lg">Auto</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="manual">
+          <TabsContent value="manual" className="bg-[#1a1f24] rounded-lg p-6">
             <BetControls
               betAmount={betAmount}
               setBetAmount={setBetAmount}
@@ -188,7 +192,7 @@ export default function Game() {
             />
           </TabsContent>
 
-          <TabsContent value="auto">
+          <TabsContent value="auto" className="bg-[#1a1f24] rounded-lg p-6">
             <AutoBetSettings
               settings={autoBetSettings}
               onSettingsChange={setAutoBetSettings}
@@ -198,7 +202,9 @@ export default function Game() {
           </TabsContent>
         </Tabs>
 
-        <GameHistory userId={1} />
+        <div className="mt-8 bg-[#1a1f24] rounded-lg p-6">
+          <GameHistory userId={1} />
+        </div>
       </div>
     </div>
   );

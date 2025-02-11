@@ -66,7 +66,7 @@ export default function GameSlider({
     <div>
       <div className="h-[120px] relative">
         {roll !== null && (
-          <div 
+          <div
             className="absolute"
             style={{
               left: `${roll}%`,
@@ -86,9 +86,7 @@ export default function GameSlider({
           <div
             className="h-2 w-full"
             style={{
-              background: isOver
-                ? "linear-gradient(to right, #ef4444, #22c55e)"
-                : "linear-gradient(to right, #22c55e, #ef4444)",
+              background: "linear-gradient(to right, #22c55e, #ef4444)"
             }}
           />
         </div>

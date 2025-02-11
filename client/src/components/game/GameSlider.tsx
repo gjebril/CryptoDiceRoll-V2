@@ -64,25 +64,27 @@ export default function GameSlider({
 
   return (
     <div>
-      <div className="relative h-32 mb-2">
+      <div className="h-[85px] relative mb-2">
         <AnimatePresence>
           {roll !== null && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, y: 10 }}
               className="absolute"
               style={{
                 left: `${roll}%`,
                 transform: 'translateX(-50%)',
-                top: '20px'
+                top: 0
               }}
             >
-              <div className="bg-[#1f2937] rounded-md px-4 py-2 text-center mb-1">
-                <span className="text-[28px] font-medium text-red-500">{roll.toFixed(2)}</span>
+              <div 
+                className="bg-[#1A1F24] rounded px-3 py-1.5 text-center"
+                style={{ minWidth: '80px' }}
+              >
+                <span className="text-[28px] text-white">{roll.toFixed(2)}</span>
               </div>
-              <div className="w-[2px] h-12 bg-[#ef4444] mx-auto" />
+              <div className="w-[1px] h-[40px] bg-red-500 mx-auto mt-1" />
             </motion.div>
           )}
         </AnimatePresence>

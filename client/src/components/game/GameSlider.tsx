@@ -27,6 +27,10 @@ export default function GameSlider({
               }}
             />
           </div>
+          {/* Add red line underneath */}
+          <div className="absolute inset-0 -z-10">
+            <div className="h-2 w-full bg-red-500 rounded-full opacity-50" />
+          </div>
           <Slider
             value={[value]}
             onValueChange={(values) => {

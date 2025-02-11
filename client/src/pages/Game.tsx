@@ -67,17 +67,35 @@ export default function Game() {
 
   const placeBet = useMutation({
     mutationFn: async () => {
-      if (betAmount <= 0) {
-        throw new Error("Bet amount must be greater than 0");
-      }
+      try {
+        if (betAmount <= 0) {
+          throw new Error("Bet amount must be greater than 0");
+        }
 
-      const res = await apiRequest("POST", "/api/bet", {
-        betAmount,
-        targetValue,
-        isOver,
-        clientSeed: currentClientSeed,
-      });
-      return res.json();
+        if (new Decimal(betAmount).gt(new Decimal(balance))) {
+          throw new Error("Insufficient balance");
+        }
+
+        const res = await apiRequest("POST", "/api/bet", {
+          betAmount,
+          targetValue,
+          isOver,
+          clientSeed: currentClientSeed,
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || "Failed to place bet");
+        }
+
+        return res.json();
+      } catch (error) {
+        throw error;
+      }
+    },
+    onMutate: () => {
+      setLastRoll(null);
+      setLastWon(null);
     },
     onSuccess: (data) => {
       const oldBalance = new Decimal(balance);
@@ -112,7 +130,8 @@ export default function Game() {
           (autoBetSettings.stopOnProfit && new Decimal(state.currentProfit).gte(autoBetSettings.stopOnProfit)) ||
           (autoBetSettings.stopOnLoss && new Decimal(state.currentProfit).lte(-autoBetSettings.stopOnLoss)) ||
           (autoBetSettings.numberOfBets && state.betsPlaced >= autoBetSettings.numberOfBets) ||
-          new Decimal(result.nextBet).gt(autoBetSettings.maxBet);
+          new Decimal(result.nextBet).gt(autoBetSettings.maxBet) ||
+          new Decimal(result.nextBet).gt(newBalance);
 
         if (shouldStop) {
           cleanupAutoBetting();
@@ -140,6 +159,8 @@ export default function Game() {
     },
     onError: (error: Error) => {
       cleanupAutoBetting();
+      setLastRoll(null);
+      setLastWon(null);
       toast({
         title: "Error",
         description: error.message,
@@ -162,6 +183,15 @@ export default function Game() {
         toast({
           title: "Error",
           description: "Base bet amount must be greater than 0",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (new Decimal(autoBetSettings.baseBet).gt(new Decimal(balance))) {
+        toast({
+          title: "Error",
+          description: "Insufficient balance for base bet",
           variant: "destructive",
         });
         return;
@@ -191,7 +221,9 @@ export default function Game() {
       <div className="p-6">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-green-500">${parseFloat(balance).toFixed(2)}</h2>
+            <h2 className="text-2xl font-bold text-green-500">
+              ${parseFloat(balance).toFixed(2)}
+            </h2>
           </div>
           <ProvablyFair
             clientSeed={currentClientSeed}
@@ -210,6 +242,9 @@ export default function Game() {
                   if (isAutoMode) {
                     setIsAutoMode(false);
                     cleanupAutoBetting();
+                    if (placeBet.isPending) {
+                      placeBet.reset();
+                    }
                   }
                 }}
                 className={`px-4 py-2 rounded-md text-sm ${
@@ -244,7 +279,11 @@ export default function Game() {
                   setBetAmount={setBetAmount}
                   isAuto={false}
                   setIsAuto={setIsAutoMode}
-                  onBet={() => placeBet.mutate()}
+                  onBet={() => {
+                    if (!placeBet.isPending) {
+                      placeBet.mutate();
+                    }
+                  }}
                   isLoading={placeBet.isPending}
                   targetValue={targetValue}
                   isOver={isOver}

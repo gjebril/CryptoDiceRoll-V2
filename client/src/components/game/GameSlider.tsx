@@ -87,11 +87,19 @@ export default function GameSlider({
       </AnimatePresence>
 
       <div className="relative h-2 mt-20 mb-10">
+        {/* Color lines */}
+        <div className="absolute inset-0 -top-1 h-4">
+          <div className="h-0.5 w-full bg-red-500" style={{ opacity: isOver ? 1 : 0.2 }} />
+          <div className="h-3" />
+          <div className="h-0.5 w-full bg-green-500" style={{ opacity: isOver ? 0.2 : 1 }} />
+        </div>
+
+        {/* Slider background with gradient */}
         <div className="absolute inset-0 rounded-full overflow-hidden">
           <div
             className="h-2 w-full"
             style={{
-              background: "linear-gradient(to right, #ef4444, #22c55e)",
+              background: "linear-gradient(to right, #22c55e, #ef4444)",
               clipPath: isOver
                 ? `inset(0 ${100 - value}% 0 0)`
                 : `inset(0 0 0 ${value}%)`,

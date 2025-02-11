@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { useState } from "react";
-import { calculateResult } from "@/lib/provablyFair";
+import { verifyBet } from "@/lib/provablyFair";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProvablyFairProps {
   clientSeed: string;
@@ -25,26 +26,49 @@ export default function ProvablyFair({
   const [verifyClientSeed, setVerifyClientSeed] = useState("");
   const [verifyServerSeed, setVerifyServerSeed] = useState("");
   const [verificationResult, setVerificationResult] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleVerify = async () => {
     if (!verifyClientSeed || !verifyServerSeed) {
-      setVerificationResult("Please enter both client seed and server seed");
+      toast({
+        title: "Error",
+        description: "Please enter both client seed and server seed",
+        variant: "destructive",
+      });
       return;
     }
 
     try {
-      const result = await calculateResult(
+      const result = await verifyBet(
         verifyClientSeed,
         verifyServerSeed,
         targetValue,
         isOver
       );
 
-      setVerificationResult(
-        `Roll: ${result.roll.toFixed(2)} - ${result.won ? "Win" : "Loss"}`
-      );
+      if (result.verified) {
+        setVerificationResult(
+          `Roll: ${result.roll.toFixed(2)} - ${result.won ? "Win" : "Loss"}`
+        );
+        toast({
+          title: "Verification Successful",
+          description: `Roll verified: ${result.roll.toFixed(2)}`,
+        });
+      } else {
+        setVerificationResult("Verification failed - invalid seeds");
+        toast({
+          title: "Verification Failed",
+          description: "Could not verify the bet with provided seeds",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       setVerificationResult("Error verifying result");
+      toast({
+        title: "Verification Error",
+        description: "An error occurred during verification",
+        variant: "destructive",
+      });
     }
   };
 
@@ -67,23 +91,35 @@ export default function ProvablyFair({
         <div className="space-y-4 mt-4">
           <div>
             <Label>Current Client Seed</Label>
-            <Input value={clientSeed} readOnly className="font-mono" />
+            <Input 
+              value={clientSeed} 
+              readOnly 
+              className="font-mono bg-muted"
+            />
           </div>
 
           <div>
             <Label>Server Seed Hash</Label>
-            <Input value={serverSeedHash || ''} readOnly className="font-mono" />
+            <Input 
+              value={serverSeedHash || ''} 
+              readOnly 
+              className="font-mono bg-muted"
+            />
           </div>
 
           {lastServerSeed && (
             <div>
-              <Label>Last Server Seed</Label>
-              <Input value={lastServerSeed} readOnly className="font-mono" />
+              <Label>Last Server Seed (Revealed)</Label>
+              <Input 
+                value={lastServerSeed} 
+                readOnly 
+                className="font-mono bg-muted"
+              />
             </div>
           )}
 
           <div className="pt-4 border-t">
-            <h4 className="font-semibold mb-4">Verify Roll</h4>
+            <h4 className="font-semibold mb-4">Verify Previous Roll</h4>
 
             <div className="space-y-4">
               <div>
@@ -111,7 +147,7 @@ export default function ProvablyFair({
               </Button>
 
               {verificationResult && (
-                <div className="p-4 bg-secondary rounded-lg mt-4">
+                <div className="p-4 bg-muted rounded-lg mt-4 text-center font-mono">
                   {verificationResult}
                 </div>
               )}

@@ -66,27 +66,31 @@ export default function GameSlider({
   return (
     <div>
       {/* Roll result display */}
-      <AnimatePresence>
-        {roll !== null && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute w-16"
-            style={{
-              left: `calc(${roll}% - 32px)`,
-              top: "20px",
-            }}
-          >
-            <div className="bg-[#1f2937] rounded-md px-3 py-2 text-center">
-              <span className="text-2xl font-bold">{roll.toFixed(2)}</span>
-            </div>
-            <div className="w-0.5 h-6 bg-[#ef4444] mx-auto mt-1" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="relative h-16">
+        <AnimatePresence>
+          {roll !== null && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="absolute"
+              style={{
+                left: `${roll}%`,
+                transform: 'translateX(-50%)',
+                bottom: '0'
+              }}
+            >
+              <div className="bg-[#1f2937] rounded-md px-3 py-2 text-center">
+                <span className="text-2xl font-bold">{roll.toFixed(2)}</span>
+              </div>
+              <div className="w-0.5 h-4 bg-[#ef4444] mx-auto mt-1" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-      <div className="relative h-2 mt-20 mb-10">
+      <div className="relative h-2 mb-4">
         {/* Slider background with gradient */}
         <div className="absolute inset-0 rounded-full overflow-hidden">
           <div

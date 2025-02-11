@@ -29,15 +29,13 @@ export default function GameSlider({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute"
+              className="absolute w-16"
               style={{
-                // Adjust position to match the visible scale
-                left: `calc(${roll}% - 0%)`,
+                left: `calc(${roll}% - 32px)`, // Center the 16px wide element
                 top: "20px",
-                transform: "translateX(-50%)",
               }}
             >
-              <div className="bg-[#1f2937] rounded-md px-3 py-2">
+              <div className="bg-[#1f2937] rounded-md px-3 py-2 text-center">
                 <span className="text-2xl font-bold">{roll.toFixed(2)}</span>
               </div>
               <div className="w-0.5 h-6 bg-red-500 mx-auto mt-1" />

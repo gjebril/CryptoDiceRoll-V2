@@ -53,15 +53,16 @@ export default function GameSlider({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="absolute w-full"
+                className="absolute"
                 style={{
-                  left: `calc(${((roll - 1) / 97) * 100}% - 20px)`, // Adjusted calculation with offset
-                  bottom: "calc(100% + 8px)", // Added consistent spacing
+                  left: `${((roll - 1) / 98) * 100}%`,
+                  bottom: "calc(100% + 8px)",
+                  transform: "translateX(-50%)",
                 }}
               >
                 <div 
                   className={cn(
-                    "rounded-lg px-2 py-1 text-center min-w-[40px]", // Added minimum width
+                    "rounded-lg px-2 py-1 text-center min-w-[40px]",
                     won ? "bg-green-500/20" : "bg-red-500/20"
                   )}
                 >
@@ -69,7 +70,7 @@ export default function GameSlider({
                 </div>
                 <div 
                   className={cn(
-                    "w-0.5 h-2 mx-auto mt-1", // Added margin top
+                    "w-0.5 h-2 mx-auto mt-1",
                     won ? "bg-green-500" : "bg-red-500"
                   )} 
                 />

@@ -8,7 +8,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { generateClientSeed } from "@/lib/provablyFair";
 
 export default function Game() {
-  const [balance, setBalance] = useState(1000);
+  const [balance, setBalance] = useState("1000");
   const [betAmount, setBetAmount] = useState(0);
   const [targetValue, setTargetValue] = useState(50);
   const [isOver, setIsOver] = useState(true);
@@ -30,7 +30,7 @@ export default function Game() {
       setBalance(data.newBalance);
       toast({
         title: data.game.won ? "You Won!" : "You Lost",
-        description: `Roll: ${data.game.roll.toFixed(2)}`,
+        description: `Roll: ${parseFloat(data.game.roll).toFixed(2)}`,
         variant: data.game.won ? "default" : "destructive",
       });
     },
@@ -47,7 +47,7 @@ export default function Game() {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <Card className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Balance: ${balance.toFixed(2)}</h2>
+          <h2 className="text-2xl font-bold mb-2">Balance: ${parseFloat(balance).toFixed(2)}</h2>
         </div>
 
         <GameSlider 

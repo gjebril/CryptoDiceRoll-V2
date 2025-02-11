@@ -6,20 +6,20 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  balance: decimal("balance", { precision: 10, scale: 2 }).notNull().default("1000"),
+  balance: text("balance").notNull().default("1000"),
 });
 
 export const games = pgTable("games", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id),
-  betAmount: decimal("bet_amount", { precision: 10, scale: 2 }).notNull(),
-  multiplier: decimal("multiplier", { precision: 10, scale: 4 }).notNull(),
+  betAmount: text("bet_amount").notNull(),
+  multiplier: text("multiplier").notNull(),
   clientSeed: text("client_seed").notNull(),
   serverSeed: text("server_seed").notNull(),
   serverSeedHash: text("server_seed_hash").notNull(),
-  roll: decimal("roll", { precision: 5, scale: 2 }).notNull(),
+  roll: text("roll").notNull(),
   won: boolean("won").notNull(),
-  payout: decimal("payout", { precision: 10, scale: 2 }).notNull(),
+  payout: text("payout").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

@@ -5,7 +5,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  updateUserBalance(userId: number, newBalance: number): Promise<User>;
+  updateUserBalance(userId: number, newBalance: string): Promise<User>;
   saveGame(game: Omit<Game, "id" | "createdAt">): Promise<Game>;
   getUserGames(userId: number): Promise<Game[]>;
 }
@@ -21,13 +21,13 @@ export class MemStorage implements IStorage {
     this.games = new Map();
     this.currentId = 1;
     this.currentGameId = 1;
-    
+
     // Add test user
     this.users.set(1, {
       id: 1,
       username: "test",
       password: createHash("sha256").update("test").digest("hex"),
-      balance: 1000
+      balance: "1000"
     });
   }
 
@@ -43,15 +43,15 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId++;
-    const user: User = { ...insertUser, id, balance: 1000 };
+    const user: User = { ...insertUser, id, balance: "1000" };
     this.users.set(id, user);
     return user;
   }
 
-  async updateUserBalance(userId: number, newBalance: number): Promise<User> {
+  async updateUserBalance(userId: number, newBalance: string): Promise<User> {
     const user = await this.getUser(userId);
     if (!user) throw new Error("User not found");
-    
+
     const updatedUser = { ...user, balance: newBalance };
     this.users.set(userId, updatedUser);
     return updatedUser;

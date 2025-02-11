@@ -31,8 +31,8 @@ export default function GameSlider({
               exit={{ opacity: 0, y: -20 }}
               className="absolute"
               style={{
-                // Position exactly at the roll percentage point
-                left: `${roll}%`,
+                // Adjust position to match the visible scale
+                left: `calc(${roll}% - 0%)`,
                 top: "20px",
                 transform: "translateX(-50%)",
               }}

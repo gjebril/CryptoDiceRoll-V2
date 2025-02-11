@@ -168,7 +168,8 @@ export default function AutoBetSettings({
       <Button 
         onClick={onStartStop}
         variant={isRunning ? "destructive" : "default"}
-        className="w-full"
+        className="w-full h-12 text-lg font-medium bg-[#4CAF50] hover:bg-[#45a049] disabled:opacity-50"
+        disabled={!settings.baseBet || settings.baseBet <= 0}
       >
         {isRunning ? "Stop Auto Bet" : "Start Auto Bet"}
       </Button>

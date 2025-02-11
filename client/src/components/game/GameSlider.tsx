@@ -64,7 +64,7 @@ export default function GameSlider({
 
   return (
     <div>
-      <div className="relative h-24">
+      <div className="relative h-32 mb-2">
         <AnimatePresence>
           {roll !== null && (
             <motion.div
@@ -76,13 +76,13 @@ export default function GameSlider({
               style={{
                 left: `${roll}%`,
                 transform: 'translateX(-50%)',
-                top: 0
+                top: '20px'
               }}
             >
-              <div className="bg-[#1f2937] rounded-md px-4 py-2">
-                <span className="text-2xl font-medium">{roll.toFixed(2)}</span>
+              <div className="bg-[#1f2937] rounded-md px-4 py-2 text-center mb-1">
+                <span className="text-[28px] font-medium text-red-500">{roll.toFixed(2)}</span>
               </div>
-              <div className="w-0.5 h-8 bg-[#ef4444] mx-auto mt-1" />
+              <div className="w-[2px] h-12 bg-[#ef4444] mx-auto" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -145,7 +145,7 @@ export default function GameSlider({
               onChange={(e) => handleInputChange(e.target.value)}
               className="bg-[#1A1F24] border-[#2A2F34]"
             />
-            <button 
+            <button
               className="p-2 bg-[#1A1F24] border border-[#2A2F34] rounded-md hover:bg-[#2A2F34]"
               onClick={() => onChange(parseFloat(inputValue))}
             >

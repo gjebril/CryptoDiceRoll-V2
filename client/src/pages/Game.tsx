@@ -20,6 +20,10 @@ export default function Game() {
 
   const placeBet = useMutation({
     mutationFn: async () => {
+      if (betAmount <= 0) {
+        throw new Error("Bet amount must be greater than 0");
+      }
+
       const clientSeed = generateClientSeed();
       const res = await apiRequest("POST", "/api/bet", {
         betAmount,
@@ -45,7 +49,7 @@ export default function Game() {
         description: error.message,
         variant: "destructive",
       });
-    },
+    }
   });
 
   return (

@@ -40,6 +40,7 @@ export default function BetControls({
               min={0}
               step={0.01}
               className="mt-1"
+              disabled={isLoading}
             />
           </div>
 
@@ -48,6 +49,7 @@ export default function BetControls({
             <Switch
               checked={isAuto}
               onCheckedChange={setIsAuto}
+              disabled={isLoading}
             />
           </div>
 
@@ -55,6 +57,7 @@ export default function BetControls({
             onClick={onBet}
             disabled={isLoading || betAmount <= 0}
             className="w-full"
+            variant={isLoading ? "outline" : "default"}
           >
             {isLoading ? "Rolling..." : "Roll Dice"}
           </Button>
@@ -76,12 +79,14 @@ export default function BetControls({
             <Button 
               variant="outline" 
               onClick={() => setBetAmount(betAmount * 2)}
+              disabled={isLoading}
             >
               2x
             </Button>
             <Button 
               variant="outline"
               onClick={() => setBetAmount(betAmount / 2)}
+              disabled={isLoading}
             >
               ½
             </Button>

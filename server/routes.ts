@@ -57,6 +57,12 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.get("/api/games/:userId", async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const games = await storage.getUserGames(userId);
+    res.json(games);
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -23,22 +23,15 @@ export default function ResultDisplay({
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className={cn(
-          "text-center p-6 rounded-lg mb-6",
-          won ? "bg-green-500/20" : "bg-red-500/20"
-        )}
+        className="relative"
       >
-        <div className="text-4xl font-bold mb-2">
-          {roll.toFixed(2)}
-        </div>
-        <div className="text-sm text-muted-foreground">
-          Target: {isOver ? ">" : "<"} {targetValue}
-        </div>
-        <div className={cn(
-          "text-lg font-semibold mt-2",
-          won ? "text-green-500" : "text-red-500"
-        )}>
-          {won ? "Winner!" : "Better luck next time!"}
+        <div className="absolute right-0 top-0">
+          <div className={cn(
+            "bg-green-500/20 rounded-lg p-4",
+            won ? "bg-green-500/20" : "bg-red-500/20"
+          )}>
+            <span className="text-2xl font-bold">{roll.toFixed(2)}</span>
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>

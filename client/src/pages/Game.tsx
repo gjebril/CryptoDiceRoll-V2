@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
 import ResultDisplay from "@/components/game/ResultDisplay";
+import GameHistory from "@/components/game/GameHistory";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -83,6 +84,8 @@ export default function Game() {
           targetValue={targetValue}
           isOver={isOver}
         />
+
+        <GameHistory userId={1} />
       </Card>
     </div>
   );

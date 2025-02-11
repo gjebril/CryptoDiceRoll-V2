@@ -29,6 +29,10 @@ export default function GameSlider({
     setInputValue(value.toFixed(2));
   }, [value]);
 
+  useEffect(() => {
+    setMultiplierValue(calculateMultiplier(value, isOver));
+  }, [value, isOver]);
+
   const handleInputChange = (newValue: string) => {
     setInputValue(newValue);
     const parsed = parseFloat(newValue);
@@ -58,10 +62,6 @@ export default function GameSlider({
     }
   };
 
-  useEffect(() => {
-    setMultiplierValue(calculateMultiplier(value, isOver));
-  }, [value, isOver]);
-
   return (
     <div>
       <div className="h-[120px] relative">
@@ -87,8 +87,16 @@ export default function GameSlider({
             className="h-2 w-full"
             style={{
               background: isOver
-                ? "linear-gradient(to right, #1A1F24, #4CAF50)"
-                : "linear-gradient(to right, #4CAF50, #1A1F24)"
+                ? `linear-gradient(to right, 
+                    #1A1F24 0%, 
+                    #1A1F24 ${value}%, 
+                    #4CAF50 ${value}%, 
+                    #4CAF50 100%)`
+                : `linear-gradient(to right, 
+                    #EF4444 0%, 
+                    #EF4444 ${value}%, 
+                    #1A1F24 ${value}%, 
+                    #1A1F24 100%)`
             }}
           />
         </div>

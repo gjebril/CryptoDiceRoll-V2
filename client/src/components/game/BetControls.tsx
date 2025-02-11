@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { useState, useEffect } from "react";
 
 interface BetControlsProps {
   betAmount: number;
@@ -24,6 +25,21 @@ export default function BetControls({
   targetValue,
   isOver,
 }: BetControlsProps) {
+  const [inputValue, setInputValue] = useState(betAmount.toString());
+
+  useEffect(() => {
+    setInputValue(betAmount.toString());
+  }, [betAmount]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue)) {
+      setBetAmount(numericValue);
+    }
+  };
+
   const multiplier = (99 / (isOver ? (99 - targetValue) : targetValue)).toFixed(4);
   const profit = (betAmount * parseFloat(multiplier) - betAmount).toFixed(2);
 
@@ -34,13 +50,12 @@ export default function BetControls({
           <div>
             <Label>Bet Amount</Label>
             <Input
-              type="number"
-              value={betAmount}
-              onChange={(e) => setBetAmount(parseFloat(e.target.value) || 0)}
-              min={0}
-              step={0.01}
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
               className="mt-1"
               disabled={isLoading}
+              placeholder="Enter bet amount"
             />
           </div>
 
@@ -85,7 +100,7 @@ export default function BetControls({
             </Button>
             <Button 
               variant="outline"
-              onClick={() => setBetAmount(betAmount / 2)}
+              onClick={() => setBetAmount(Math.max(betAmount / 2, 0))}
               disabled={isLoading}
             >
               ½

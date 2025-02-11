@@ -95,7 +95,6 @@ export default function Game() {
 
         if (shouldStop) {
           setIsAutoBetting(false);
-          setAutoBetSettings(prev => ({...prev, enabled: false}));
           toast({
             title: "Auto Betting Stopped",
             description: `Final profit: ${state.currentProfit}`,
@@ -121,7 +120,6 @@ export default function Game() {
     },
     onError: (error: Error) => {
       setIsAutoBetting(false);
-      setAutoBetSettings(prev => ({...prev, enabled: false}));
       toast({
         title: "Error",
         description: error.message,
@@ -133,7 +131,6 @@ export default function Game() {
   const handleStartStopAutoBet = useCallback(() => {
     if (isAutoBetting) {
       setIsAutoBetting(false);
-      setAutoBetSettings(prev => ({...prev, enabled: false}));
       if (placeBet.isPending) {
         placeBet.reset();
       }
@@ -154,7 +151,6 @@ export default function Game() {
       };
 
       setBetAmount(autoBetSettings.baseBet);
-      setAutoBetSettings(prev => ({ ...prev, enabled: true }));
       setIsAutoBetting(true);
       placeBet.mutate();
     }
@@ -183,7 +179,6 @@ export default function Game() {
               <button
                 onClick={() => {
                   setIsAutoBetting(false);
-                  setAutoBetSettings(prev => ({ ...prev, enabled: false }));
                   if (placeBet.isPending) {
                     placeBet.reset();
                   }
@@ -199,7 +194,6 @@ export default function Game() {
               <button
                 onClick={() => {
                   setIsAutoBetting(true);
-                  setAutoBetSettings(prev => ({ ...prev, enabled: true }));
                 }}
                 className={`px-4 py-2 rounded-md text-sm ${
                   isAutoBetting
@@ -212,7 +206,7 @@ export default function Game() {
             </div>
 
             <div className="p-4">
-              {!autoBetSettings.enabled ? (
+              {!isAutoBetting ? (
                 <BetControls
                   betAmount={betAmount}
                   setBetAmount={setBetAmount}

@@ -123,7 +123,7 @@ export default function Game() {
     }
   });
 
-  const handleStartStopAutoBet = () => {
+  const handleStartStopAutoBet = useCallback(() => {
     if (isAutoBetting) {
       setIsAutoBetting(false);
     } else {
@@ -136,7 +136,7 @@ export default function Game() {
       setIsAutoBetting(true);
       placeBet.mutate();
     }
-  };
+  }, [isAutoBetting, balance, autoBetSettings.baseBet]);
 
   return (
     <div className="min-h-screen bg-[#0f1419] text-white">
@@ -185,8 +185,8 @@ export default function Game() {
                 <BetControls
                   betAmount={betAmount}
                   setBetAmount={setBetAmount}
-                  isAuto={false}
-                  setIsAuto={() => {}}
+                  isAuto={isAutoBetting}
+                  setIsAuto={setIsAutoBetting}
                   onBet={() => placeBet.mutate()}
                   isLoading={placeBet.isPending}
                   targetValue={targetValue}

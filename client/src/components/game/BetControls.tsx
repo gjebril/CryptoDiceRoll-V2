@@ -10,6 +10,8 @@ interface BetControlsProps {
   setIsAuto: (auto: boolean) => void;
   onBet: () => void;
   isLoading: boolean;
+  targetValue: number;
+  isOver: boolean;
 }
 
 export default function BetControls({
@@ -19,6 +21,8 @@ export default function BetControls({
   setIsAuto,
   onBet,
   isLoading,
+  targetValue,
+  isOver,
 }: BetControlsProps) {
   const [inputValue, setInputValue] = useState(betAmount.toString());
 
@@ -33,6 +37,11 @@ export default function BetControls({
     if (!isNaN(numericValue)) {
       setBetAmount(numericValue);
     }
+  };
+
+  const calculateProfit = () => {
+    const multiplier = 99 / (isOver ? (99 - targetValue) : targetValue);
+    return (betAmount * multiplier).toFixed(8);
   };
 
   return (
@@ -71,7 +80,7 @@ export default function BetControls({
         <Label className="text-sm text-gray-400">Profit on Win</Label>
         <Input
           type="text"
-          value={(betAmount * 2).toFixed(8)}
+          value={calculateProfit()}
           readOnly
           className="h-10 bg-[#1A1F24] border-[#2A2F34] text-sm mt-1"
         />

@@ -30,16 +30,20 @@ export default function ProvablyFair({
       return;
     }
 
-    const result = await calculateResult(
-      verifyClientSeed,
-      verifyServerSeed,
-      targetValue,
-      isOver
-    );
+    try {
+      const result = await calculateResult(
+        verifyClientSeed,
+        verifyServerSeed,
+        targetValue,
+        isOver
+      );
 
-    setVerificationResult(
-      `Roll: ${result.roll.toFixed(2)} - ${result.won ? "Win" : "Loss"}`
-    );
+      setVerificationResult(
+        `Roll: ${result.roll.toFixed(2)} - ${result.won ? "Win" : "Loss"}`
+      );
+    } catch (error) {
+      setVerificationResult("Error verifying result");
+    }
   };
 
   return (
@@ -56,7 +60,7 @@ export default function ProvablyFair({
             <Label>Current Client Seed</Label>
             <Input value={clientSeed} readOnly className="font-mono" />
           </div>
-          
+
           <div>
             <Label>Server Seed Hash</Label>
             <Input value={serverSeedHash || ''} readOnly className="font-mono" />
@@ -71,7 +75,7 @@ export default function ProvablyFair({
 
           <div className="pt-4 border-t">
             <h4 className="font-semibold mb-4">Verify Roll</h4>
-            
+
             <div className="space-y-4">
               <div>
                 <Label>Client Seed</Label>
@@ -82,7 +86,7 @@ export default function ProvablyFair({
                   placeholder="Enter client seed to verify"
                 />
               </div>
-              
+
               <div>
                 <Label>Server Seed</Label>
                 <Input

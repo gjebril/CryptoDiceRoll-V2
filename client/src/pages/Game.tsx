@@ -213,8 +213,6 @@ export default function Game() {
                 setIsOver={setIsOver}
                 roll={lastRoll}
                 won={lastWon}
-                multiplier={(99 / (isOver ? (99 - targetValue) : targetValue)).toFixed(4)}
-                chance={(isOver ? (99 - targetValue) : targetValue).toFixed(4)}
               />
             </div>
 

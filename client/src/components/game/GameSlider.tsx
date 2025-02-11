@@ -1,4 +1,5 @@
 import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib/utils";
 
 interface GameSliderProps {
   value: number;
@@ -27,17 +28,13 @@ export default function GameSlider({
               }}
             />
           </div>
-          {/* Add red line underneath */}
+          {/* Red line underneath */}
           <div className="absolute inset-0 -z-10">
             <div className="h-2 w-full bg-red-500 rounded-full opacity-50" />
           </div>
           <Slider
             value={[value]}
-            onValueChange={(values) => {
-              onChange(values[0]);
-              // Automatically switch to over/under based on which side of 50 we're on
-              setIsOver(values[0] > 50);
-            }}
+            onValueChange={(values) => onChange(values[0])}
             min={1}
             max={98}
             step={0.5}
@@ -53,9 +50,10 @@ export default function GameSlider({
         </div>
 
         <div className="absolute right-0 top-0">
-          <div className={`rounded-lg p-2 ${
+          <div className={cn(
+            "bg-green-500/20 rounded-lg p-4",
             isOver ? "bg-green-500/20" : "bg-red-500/20"
-          }`}>
+          )}>
             <span className="text-2xl font-bold">{value.toFixed(2)}</span>
           </div>
         </div>

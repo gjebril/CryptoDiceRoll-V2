@@ -22,9 +22,9 @@ export default function Game() {
   const [currentClientSeed, setCurrentClientSeed] = useState(generateClientSeed());
   const [lastServerSeed, setLastServerSeed] = useState<string | null>(null);
   const [currentServerSeedHash, setCurrentServerSeedHash] = useState<string | null>(null);
-
-  // Auto betting state
+  const [isAutoMode, setIsAutoMode] = useState(false);
   const [isAutoBetting, setIsAutoBetting] = useState(false);
+
   const [autoBetSettings, setAutoBetSettings] = useState<AutoBetSettingsType>({
     enabled: false,
     strategy: "martingale",
@@ -177,7 +177,8 @@ export default function Game() {
             <div className="flex items-center gap-2 p-3 border-b border-[#2A2F34]">
               <button
                 onClick={() => {
-                  if (isAutoBetting) {
+                  if (isAutoMode) {
+                    setIsAutoMode(false);
                     setIsAutoBetting(false);
                     if (placeBet.isPending) {
                       placeBet.reset();
@@ -185,7 +186,7 @@ export default function Game() {
                   }
                 }}
                 className={`px-4 py-2 rounded-md text-sm ${
-                  !isAutoBetting
+                  !isAutoMode
                     ? "bg-[#2A2F34] text-white"
                     : "text-gray-400 hover:bg-[#2A2F34]/50"
                 }`}
@@ -194,12 +195,13 @@ export default function Game() {
               </button>
               <button
                 onClick={() => {
-                  if (!isAutoBetting) {
+                  if (!isAutoMode) {
+                    setIsAutoMode(true);
                     setBetAmount(autoBetSettings.baseBet);
                   }
                 }}
                 className={`px-4 py-2 rounded-md text-sm ${
-                  isAutoBetting
+                  isAutoMode
                     ? "bg-[#2A2F34] text-white"
                     : "text-gray-400 hover:bg-[#2A2F34]/50"
                 }`}
@@ -209,12 +211,12 @@ export default function Game() {
             </div>
 
             <div className="p-4">
-              {!isAutoBetting ? (
+              {!isAutoMode ? (
                 <BetControls
                   betAmount={betAmount}
                   setBetAmount={setBetAmount}
                   isAuto={false}
-                  setIsAuto={setIsAutoBetting}
+                  setIsAuto={setIsAutoMode}
                   onBet={() => placeBet.mutate()}
                   isLoading={placeBet.isPending}
                   targetValue={targetValue}
@@ -224,7 +226,7 @@ export default function Game() {
                 <AutoBetSettings
                   settings={autoBetSettings}
                   onSettingsChange={setAutoBetSettings}
-                  isRunning={isAutoBetting && placeBet.isPending}
+                  isRunning={isAutoBetting}
                   onStartStop={handleStartStopAutoBet}
                 />
               )}

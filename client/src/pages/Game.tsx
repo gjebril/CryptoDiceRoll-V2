@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
 import ResultDisplay from "@/components/game/ResultDisplay";
@@ -161,25 +162,34 @@ export default function Game() {
           setIsOver={setIsOver}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <BetControls
-            betAmount={betAmount}
-            setBetAmount={setBetAmount}
-            isAuto={false}
-            setIsAuto={() => {}}
-            onBet={() => placeBet.mutate()}
-            isLoading={placeBet.isPending}
-            targetValue={targetValue}
-            isOver={isOver}
-          />
+        <Tabs defaultValue="manual" className="mt-8">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="manual">Manual</TabsTrigger>
+            <TabsTrigger value="auto">Auto</TabsTrigger>
+          </TabsList>
 
-          <AutoBetSettings
-            settings={autoBetSettings}
-            onSettingsChange={setAutoBetSettings}
-            isRunning={isAutoBetting}
-            onStartStop={handleStartStopAutoBet}
-          />
-        </div>
+          <TabsContent value="manual">
+            <BetControls
+              betAmount={betAmount}
+              setBetAmount={setBetAmount}
+              isAuto={false}
+              setIsAuto={() => {}}
+              onBet={() => placeBet.mutate()}
+              isLoading={placeBet.isPending}
+              targetValue={targetValue}
+              isOver={isOver}
+            />
+          </TabsContent>
+
+          <TabsContent value="auto">
+            <AutoBetSettings
+              settings={autoBetSettings}
+              onSettingsChange={setAutoBetSettings}
+              isRunning={isAutoBetting}
+              onStartStop={handleStartStopAutoBet}
+            />
+          </TabsContent>
+        </Tabs>
 
         <ProvablyFair
           clientSeed={currentClientSeed}

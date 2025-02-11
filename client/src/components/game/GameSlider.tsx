@@ -64,8 +64,7 @@ export default function GameSlider({
 
   return (
     <div>
-      {/* Roll result display */}
-      <div className="relative h-20 mb-2">
+      <div className="relative h-24">
         <AnimatePresence>
           {roll !== null && (
             <motion.div
@@ -73,22 +72,23 @@ export default function GameSlider({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute bottom-0 translate-x-[-50%]"
+              className="absolute"
               style={{
                 left: `${roll}%`,
+                transform: 'translateX(-50%)',
+                top: 0
               }}
             >
-              <div className="bg-[#1f2937] rounded-md px-3 py-2 text-center">
-                <span className="text-2xl font-bold">{roll.toFixed(2)}</span>
+              <div className="bg-[#1f2937] rounded-md px-4 py-2">
+                <span className="text-2xl font-medium">{roll.toFixed(2)}</span>
               </div>
-              <div className="w-0.5 h-6 bg-[#ef4444] mx-auto mt-1" />
+              <div className="w-0.5 h-8 bg-[#ef4444] mx-auto mt-1" />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
       <div className="relative h-2 mb-4">
-        {/* Slider background with gradient */}
         <div className="absolute inset-0 rounded-full overflow-hidden">
           <div
             className="h-2 w-full"
@@ -117,7 +117,6 @@ export default function GameSlider({
         <span>100</span>
       </div>
 
-      {/* Stats Display */}
       <div className="grid grid-cols-3 gap-4 mt-6">
         <div>
           <div className="text-sm text-gray-400 mb-1">Multiplier</div>

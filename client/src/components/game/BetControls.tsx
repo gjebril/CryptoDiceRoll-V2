@@ -89,7 +89,7 @@ export default function BetControls({
       <Button 
         onClick={onBet}
         disabled={isLoading || betAmount <= 0}
-        className="w-full h-12 text-lg font-medium bg-[#4CAF50] hover:bg-[#45a049] mt-4"
+        className="w-full h-12 text-lg font-medium bg-[#EF4444] hover:bg-[#DC2626] disabled:opacity-50"
       >
         {isLoading ? "Rolling..." : "Bet"}
       </Button>

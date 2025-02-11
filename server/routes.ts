@@ -48,7 +48,7 @@ export function registerRoutes(app: Express): Server {
       res.json({
         game,
         newBalance: newBalance.toString(),
-        serverSeed: won ? serverSeed : undefined,
+        serverSeed: won ? serverSeed : undefined, // Only reveal server seed if player won
         serverSeedHash
       });
     } catch (err) {

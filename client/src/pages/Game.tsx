@@ -4,6 +4,7 @@ import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
 import ResultDisplay from "@/components/game/ResultDisplay";
 import GameHistory from "@/components/game/GameHistory";
+import ProvablyFair from "@/components/game/ProvablyFair";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -17,6 +18,10 @@ export default function Game() {
   const [isAuto, setIsAuto] = useState(false);
   const [lastRoll, setLastRoll] = useState<number | null>(null);
   const [lastWon, setLastWon] = useState<boolean | null>(null);
+  const [currentClientSeed, setCurrentClientSeed] = useState(generateClientSeed());
+  const [lastServerSeed, setLastServerSeed] = useState<string | null>(null);
+  const [currentServerSeedHash, setCurrentServerSeedHash] = useState<string | null>(null);
+
   const { toast } = useToast();
 
   const placeBet = useMutation({
@@ -25,12 +30,11 @@ export default function Game() {
         throw new Error("Bet amount must be greater than 0");
       }
 
-      const clientSeed = generateClientSeed();
       const res = await apiRequest("POST", "/api/bet", {
         betAmount,
         targetValue,
         isOver,
-        clientSeed,
+        clientSeed: currentClientSeed,
       });
       return res.json();
     },
@@ -38,6 +42,9 @@ export default function Game() {
       setBalance(data.newBalance);
       setLastRoll(parseFloat(data.game.roll));
       setLastWon(data.game.won);
+      setLastServerSeed(data.serverSeed);
+      setCurrentServerSeedHash(data.serverSeedHash);
+      setCurrentClientSeed(generateClientSeed()); // Generate new client seed for next bet
 
       // Invalidate games query to refresh history
       queryClient.invalidateQueries({ queryKey: ['/api/games/1'] });
@@ -85,6 +92,14 @@ export default function Game() {
           setIsAuto={setIsAuto}
           onBet={() => placeBet.mutate()}
           isLoading={placeBet.isPending}
+          targetValue={targetValue}
+          isOver={isOver}
+        />
+
+        <ProvablyFair
+          clientSeed={currentClientSeed}
+          serverSeedHash={currentServerSeedHash}
+          lastServerSeed={lastServerSeed}
           targetValue={targetValue}
           isOver={isOver}
         />

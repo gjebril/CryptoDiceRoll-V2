@@ -227,7 +227,7 @@ export default function Game() {
                 <AutoBetSettings
                   settings={autoBetSettings}
                   onSettingsChange={setAutoBetSettings}
-                  isRunning={isAutoBetting}
+                  isRunning={isAutoBetting && autoBetSettings.enabled}
                   onStartStop={handleStartStopAutoBet}
                 />
               )}

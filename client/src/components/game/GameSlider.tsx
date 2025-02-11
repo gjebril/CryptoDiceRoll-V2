@@ -1,11 +1,14 @@
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface GameSliderProps {
   value: number;
   onChange: (value: number) => void;
   isOver: boolean;
   setIsOver: (over: boolean) => void;
+  roll: number | null;
+  won: boolean | null;
 }
 
 export default function GameSlider({
@@ -13,6 +16,8 @@ export default function GameSlider({
   onChange,
   isOver,
   setIsOver,
+  roll,
+  won,
 }: GameSliderProps) {
   return (
     <div className="space-y-6">
@@ -40,6 +45,38 @@ export default function GameSlider({
             step={0.5}
             className="w-full"
           />
+
+          {/* Roll result display */}
+          <AnimatePresence>
+            {roll !== null && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="absolute w-full"
+                style={{
+                  left: `${((roll - 1) / 97) * 100}%`,
+                  bottom: "100%",
+                  transform: "translateX(-50%)",
+                }}
+              >
+                <div 
+                  className={cn(
+                    "rounded-lg px-2 py-1 text-center",
+                    won ? "bg-green-500/20" : "bg-red-500/20"
+                  )}
+                >
+                  <span className="text-sm font-bold">{roll.toFixed(2)}</span>
+                </div>
+                <div 
+                  className={cn(
+                    "w-0.5 h-2 mx-auto",
+                    won ? "bg-green-500" : "bg-red-500"
+                  )} 
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <div className="absolute w-full flex justify-between text-sm text-muted-foreground -bottom-6">
           <span>0</span>

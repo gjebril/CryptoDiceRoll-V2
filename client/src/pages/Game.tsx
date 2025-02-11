@@ -2,7 +2,6 @@ import { useState, useCallback, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
-import ResultDisplay from "@/components/game/ResultDisplay";
 import GameHistory from "@/components/game/GameHistory";
 import ProvablyFair from "@/components/game/ProvablyFair";
 import AutoBetSettings from "@/components/game/AutoBetSettings";
@@ -157,19 +156,14 @@ export default function Game() {
           />
         </div>
 
-        <ResultDisplay
-          roll={lastRoll}
-          targetValue={targetValue}
-          isOver={isOver}
-          won={lastWon}
-        />
-
         <div className="bg-[#1a1f24] rounded-lg p-6 mb-8">
           <GameSlider 
             value={targetValue} 
             onChange={setTargetValue}
             isOver={isOver}
             setIsOver={setIsOver}
+            roll={lastRoll}
+            won={lastWon}
           />
         </div>
 

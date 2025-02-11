@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { calculateResult } from "@/lib/provablyFair";
 
@@ -47,15 +49,22 @@ export default function ProvablyFair({
   };
 
   return (
-    <Card className="mt-8">
-      <CardHeader>
-        <CardTitle>Provably Fair</CardTitle>
-        <CardDescription>
-          Verify the fairness of your bets using client and server seeds
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          <span className="text-xs">Provably Fair</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <div className="flex items-center justify-between">
+            <DialogTitle>Provably Fair</DialogTitle>
+            <DialogClose>
+              <X className="h-4 w-4" />
+            </DialogClose>
+          </div>
+        </DialogHeader>
+        <div className="space-y-4 mt-4">
           <div>
             <Label>Current Client Seed</Label>
             <Input value={clientSeed} readOnly className="font-mono" />
@@ -109,7 +118,7 @@ export default function ProvablyFair({
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 }

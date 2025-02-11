@@ -143,9 +143,16 @@ export default function Game() {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
-      <Card className="max-w-4xl mx-auto p-6">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Balance: ${parseFloat(balance).toFixed(2)}</h2>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="mb-8 flex justify-between items-center">
+          <h2 className="text-2xl font-bold">Balance: ${parseFloat(balance).toFixed(2)}</h2>
+          <ProvablyFair
+            clientSeed={currentClientSeed}
+            serverSeedHash={currentServerSeedHash}
+            lastServerSeed={lastServerSeed}
+            targetValue={targetValue}
+            isOver={isOver}
+          />
         </div>
 
         <ResultDisplay
@@ -191,16 +198,8 @@ export default function Game() {
           </TabsContent>
         </Tabs>
 
-        <ProvablyFair
-          clientSeed={currentClientSeed}
-          serverSeedHash={currentServerSeedHash}
-          lastServerSeed={lastServerSeed}
-          targetValue={targetValue}
-          isOver={isOver}
-        />
-
         <GameHistory userId={1} />
-      </Card>
+      </div>
     </div>
   );
 }

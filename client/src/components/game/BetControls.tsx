@@ -34,7 +34,7 @@ export default function BetControls({
     const value = e.target.value;
     setInputValue(value);
     const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
+    if (!isNaN(numericValue) && numericValue >= 0) {
       setBetAmount(numericValue);
     }
   };
@@ -59,7 +59,7 @@ export default function BetControls({
           />
           <Button 
             variant="outline" 
-            onClick={() => setBetAmount(betAmount / 2)}
+            onClick={() => setBetAmount(Math.max(0, betAmount / 2))}
             disabled={isLoading}
             className="h-10 px-3 bg-[#1A1F24] border-[#2A2F34] hover:bg-[#2A2F34]"
           >

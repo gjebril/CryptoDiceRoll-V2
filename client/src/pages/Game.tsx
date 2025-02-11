@@ -51,14 +51,12 @@ export default function Game() {
     timeoutId: null as NodeJS.Timeout | null
   });
 
-  // Add this useEffect to sync strategy state
   useEffect(() => {
     autoBetStateRef.current.strategyState = autoBetSettings.strategyState;
   }, [autoBetSettings.strategyState]);
 
   const { toast } = useToast();
 
-  // Cleanup function to clear any pending timeouts
   const cleanupAutoBetting = useCallback(() => {
     if (autoBetStateRef.current.timeoutId) {
       clearTimeout(autoBetStateRef.current.timeoutId);
@@ -93,8 +91,7 @@ export default function Game() {
       setCurrentServerSeedHash(data.serverSeedHash);
       setCurrentClientSeed(generateClientSeed());
 
-      // Update auto betting state if active
-      if (isAutoBetting) {
+      if (isAutoBetting && isAutoMode) {
         const state = autoBetStateRef.current;
         state.betsPlaced += 1;
         state.currentProfit = newBalance.minus(state.startingBalance).toString();
@@ -109,10 +106,8 @@ export default function Game() {
           state.strategyState
         );
 
-        // Update strategy state
         state.strategyState = result.newState;
 
-        // Check stop conditions
         const shouldStop =
           (autoBetSettings.stopOnProfit && new Decimal(state.currentProfit).gte(autoBetSettings.stopOnProfit)) ||
           (autoBetSettings.stopOnLoss && new Decimal(state.currentProfit).lte(-autoBetSettings.stopOnLoss)) ||
@@ -127,7 +122,6 @@ export default function Game() {
           });
         } else {
           setBetAmount(result.nextBet);
-          // Schedule next bet
           state.timeoutId = setTimeout(() => {
             if (isAutoBetting) {
               placeBet.mutate();
@@ -136,7 +130,6 @@ export default function Game() {
         }
       }
 
-      // Invalidate games query to refresh history
       queryClient.invalidateQueries({ queryKey: ['/api/games/1'] });
 
       toast({
@@ -155,7 +148,6 @@ export default function Game() {
     }
   });
 
-  // Component cleanup
   useEffect(() => {
     return () => {
       cleanupAutoBetting();
@@ -175,7 +167,6 @@ export default function Game() {
         return;
       }
 
-      // Initialize auto bet state
       autoBetStateRef.current = {
         betsPlaced: 0,
         startingBalance: balance,
@@ -187,7 +178,6 @@ export default function Game() {
       setBetAmount(autoBetSettings.baseBet);
       setIsAutoBetting(true);
 
-      // Start the first bet after a short delay
       autoBetStateRef.current.timeoutId = setTimeout(() => {
         if (isAutoBetting) {
           placeBet.mutate();

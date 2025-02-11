@@ -21,7 +21,7 @@ export default function GameSlider({
 }: GameSliderProps) {
   return (
     <div className="space-y-6">
-      <div className="relative pt-6">
+      <div className="relative pt-12"> {/* Increased top padding for roll display */}
         <div className="relative">
           <div className="absolute inset-0 rounded-full overflow-hidden">
             <div
@@ -55,14 +55,13 @@ export default function GameSlider({
                 exit={{ opacity: 0, y: -20 }}
                 className="absolute w-full"
                 style={{
-                  left: `${((roll - 1) / 97) * 100}%`,
-                  bottom: "100%",
-                  transform: "translateX(-50%)",
+                  left: `calc(${((roll - 1) / 97) * 100}% - 20px)`, // Adjusted calculation with offset
+                  bottom: "calc(100% + 8px)", // Added consistent spacing
                 }}
               >
                 <div 
                   className={cn(
-                    "rounded-lg px-2 py-1 text-center",
+                    "rounded-lg px-2 py-1 text-center min-w-[40px]", // Added minimum width
                     won ? "bg-green-500/20" : "bg-red-500/20"
                   )}
                 >
@@ -70,7 +69,7 @@ export default function GameSlider({
                 </div>
                 <div 
                   className={cn(
-                    "w-0.5 h-2 mx-auto",
+                    "w-0.5 h-2 mx-auto mt-1", // Added margin top
                     won ? "bg-green-500" : "bg-red-500"
                   )} 
                 />

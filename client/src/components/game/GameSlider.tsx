@@ -31,7 +31,8 @@ export default function GameSlider({
               exit={{ opacity: 0, y: -20 }}
               className="absolute"
               style={{
-                left: `${roll}%`,
+                // Adjust position to account for slider range
+                left: `${((roll - 1) / 98) * 100}%`,
                 top: "20px",
                 transform: "translateX(-50%)",
               }}

@@ -51,6 +51,11 @@ export default function Game() {
     timeoutId: null as NodeJS.Timeout | null
   });
 
+  // Add this useEffect to sync strategy state
+  useEffect(() => {
+    autoBetStateRef.current.strategyState = autoBetSettings.strategyState;
+  }, [autoBetSettings.strategyState]);
+
   const { toast } = useToast();
 
   // Cleanup function to clear any pending timeouts

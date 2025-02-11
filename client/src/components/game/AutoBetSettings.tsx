@@ -25,7 +25,19 @@ export default function AutoBetSettings({
   onStartStop,
 }: AutoBetSettingsProps) {
   const updateSettings = (updates: Partial<AutoBetSettings>) => {
-    onSettingsChange({ ...settings, ...updates });
+    const newSettings = { ...settings, ...updates };
+
+    // Initialize strategy state based on selected strategy
+    if (updates.strategy) {
+      newSettings.strategyState = {
+        sequence: updates.strategy === "fibonacci" ? [1] : undefined,
+        stage: updates.strategy === "oscarsGrind" ? 0 : undefined,
+        winStreak: updates.strategy === "oscarsGrind" ? 0 : undefined,
+        lossStreak: undefined
+      };
+    }
+
+    onSettingsChange(newSettings);
   };
 
   const getStrategyDescription = (strategy: AutoBetStrategy) => {

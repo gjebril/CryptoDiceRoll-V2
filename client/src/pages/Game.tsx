@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import BetControls from "@/components/game/BetControls";
 import GameSlider from "@/components/game/GameSlider";
+import ResultDisplay from "@/components/game/ResultDisplay";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -13,6 +14,8 @@ export default function Game() {
   const [targetValue, setTargetValue] = useState(50);
   const [isOver, setIsOver] = useState(true);
   const [isAuto, setIsAuto] = useState(false);
+  const [lastRoll, setLastRoll] = useState<number | null>(null);
+  const [lastWon, setLastWon] = useState<boolean | null>(null);
   const { toast } = useToast();
 
   const placeBet = useMutation({
@@ -28,6 +31,8 @@ export default function Game() {
     },
     onSuccess: (data) => {
       setBalance(data.newBalance);
+      setLastRoll(parseFloat(data.game.roll));
+      setLastWon(data.game.won);
       toast({
         title: data.game.won ? "You Won!" : "You Lost",
         description: `Roll: ${parseFloat(data.game.roll).toFixed(2)}`,
@@ -49,6 +54,13 @@ export default function Game() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-2">Balance: ${parseFloat(balance).toFixed(2)}</h2>
         </div>
+
+        <ResultDisplay
+          roll={lastRoll}
+          targetValue={targetValue}
+          isOver={isOver}
+          won={lastWon}
+        />
 
         <GameSlider 
           value={targetValue} 

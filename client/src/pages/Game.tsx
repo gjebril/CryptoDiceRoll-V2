@@ -6,7 +6,7 @@ import ResultDisplay from "@/components/game/ResultDisplay";
 import GameHistory from "@/components/game/GameHistory";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { generateClientSeed } from "@/lib/provablyFair";
 
 export default function Game() {
@@ -38,6 +38,10 @@ export default function Game() {
       setBalance(data.newBalance);
       setLastRoll(parseFloat(data.game.roll));
       setLastWon(data.game.won);
+
+      // Invalidate games query to refresh history
+      queryClient.invalidateQueries({ queryKey: ['/api/games/1'] });
+
       toast({
         title: data.game.won ? "You Won!" : "You Lost",
         description: `Roll: ${parseFloat(data.game.roll).toFixed(2)}`,

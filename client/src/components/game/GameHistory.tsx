@@ -8,7 +8,7 @@ interface GameHistoryProps {
 }
 
 export default function GameHistory({ userId }: GameHistoryProps) {
-  const { data: games = [] } = useQuery<Game[]>({
+  const { data: games = [], isLoading } = useQuery<Game[]>({
     queryKey: [`/api/games/${userId}`],
   });
 
@@ -27,17 +27,27 @@ export default function GameHistory({ userId }: GameHistoryProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {games.map((game) => (
-              <TableRow key={game.id}>
-                <TableCell>{parseFloat(game.betAmount).toFixed(8)} BTC</TableCell>
-                <TableCell>{parseFloat(game.multiplier).toFixed(4)}x</TableCell>
-                <TableCell>{parseFloat(game.roll).toFixed(2)}</TableCell>
-                <TableCell className={game.won ? "text-green-500" : "text-red-500"}>
-                  {game.won ? "Win" : "Loss"}
-                </TableCell>
-                <TableCell>{parseFloat(game.payout).toFixed(8)} BTC</TableCell>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">Loading...</TableCell>
               </TableRow>
-            ))}
+            ) : games.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">No games played yet</TableCell>
+              </TableRow>
+            ) : (
+              games.map((game) => (
+                <TableRow key={game.id}>
+                  <TableCell>{parseFloat(game.betAmount).toFixed(8)} BTC</TableCell>
+                  <TableCell>{parseFloat(game.multiplier).toFixed(4)}x</TableCell>
+                  <TableCell>{parseFloat(game.roll).toFixed(2)}</TableCell>
+                  <TableCell className={game.won ? "text-green-500" : "text-red-500"}>
+                    {game.won ? "Win" : "Loss"}
+                  </TableCell>
+                  <TableCell>{parseFloat(game.payout).toFixed(8)} BTC</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </ScrollArea>

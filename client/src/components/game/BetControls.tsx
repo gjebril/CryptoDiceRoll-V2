@@ -43,57 +43,75 @@ export default function BetControls({
   const profit = (betAmount * parseFloat(multiplier) - betAmount).toFixed(8);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <Label className="text-sm font-medium mb-2">Bet Amount</Label>
-        <div className="flex gap-4 mb-4">
+    <div className="space-y-4">
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
+          <div className="mb-2">
+            <Label className="text-sm text-gray-400">Bet Amount</Label>
+            <div className="text-xs text-gray-500">${(betAmount * 1000).toFixed(2)}</div>
+          </div>
           <Input
             type="text"
             value={inputValue}
             onChange={handleInputChange}
-            className="text-lg h-12"
+            className="text-base h-10 bg-[#1A1F24] border-[#2A2F34]"
             disabled={isLoading}
-            placeholder="Enter bet amount"
+            placeholder="0.00000000"
           />
-          <div className="grid grid-cols-2 gap-2 w-32">
-            <Button 
-              variant="outline" 
-              onClick={() => setBetAmount(betAmount * 2)}
-              disabled={isLoading}
-              className="h-12"
-            >
-              2×
-            </Button>
-            <Button 
-              variant="outline"
-              onClick={() => setBetAmount(Math.max(betAmount / 2, 0))}
-              disabled={isLoading}
-              className="h-12"
-            >
-              ½
-            </Button>
-          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => setBetAmount(betAmount / 2)}
+            disabled={isLoading}
+            className="h-10 px-3 bg-[#1A1F24] border-[#2A2F34] hover:bg-[#2A2F34]"
+          >
+            ½
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={() => setBetAmount(betAmount * 2)}
+            disabled={isLoading}
+            className="h-10 px-3 bg-[#1A1F24] border-[#2A2F34] hover:bg-[#2A2F34]"
+          >
+            2×
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        <div className="bg-[#262b31] rounded-lg p-4">
-          <span className="text-sm text-gray-400">Multiplier</span>
-          <div className="text-xl font-bold">{multiplier}×</div>
+      <div>
+        <Label className="text-sm text-gray-400">Profit on Win</Label>
+        <Input
+          type="text"
+          value={profit}
+          readOnly
+          className="text-base h-10 bg-[#1A1F24] border-[#2A2F34]"
+        />
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 p-4 bg-[#1A1F24] rounded-lg">
+        <div>
+          <div className="text-sm text-gray-400">Multiplier</div>
+          <div className="text-base font-medium">{multiplier}×</div>
         </div>
-        <div className="bg-[#262b31] rounded-lg p-4">
-          <span className="text-sm text-gray-400">Profit on Win</span>
-          <div className="text-xl font-bold">{profit} BTC</div>
+        <div>
+          <div className="text-sm text-gray-400">Roll {isOver ? "Over" : "Under"}</div>
+          <div className="text-base font-medium">{targetValue.toFixed(2)}</div>
+        </div>
+        <div>
+          <div className="text-sm text-gray-400">Win Chance</div>
+          <div className="text-base font-medium">
+            {(isOver ? (99 - targetValue) : targetValue).toFixed(4)}%
+          </div>
         </div>
       </div>
 
       <Button 
         onClick={onBet}
         disabled={isLoading || betAmount <= 0}
-        className="w-full h-12 text-lg font-medium"
-        variant={isLoading ? "secondary" : "default"}
+        className="w-full h-12 text-lg font-medium bg-[#4CAF50] hover:bg-[#45a049]"
       >
-        {isLoading ? "Rolling..." : "Roll Dice"}
+        {isLoading ? "Rolling..." : "Bet"}
       </Button>
     </div>
   );

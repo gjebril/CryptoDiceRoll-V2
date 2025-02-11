@@ -144,8 +144,7 @@ export default function Game() {
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-white">Balance</h2>
-            <p className="text-xl font-medium text-green-500">${parseFloat(balance).toFixed(2)}</p>
+            <h2 className="text-2xl font-bold text-green-500">${parseFloat(balance).toFixed(2)}</h2>
           </div>
           <ProvablyFair
             clientSeed={currentClientSeed}
@@ -156,48 +155,68 @@ export default function Game() {
           />
         </div>
 
-        <div className="bg-[#1a1f24] rounded-lg p-6 mb-8">
-          <GameSlider 
-            value={targetValue} 
-            onChange={setTargetValue}
-            isOver={isOver}
-            setIsOver={setIsOver}
-            roll={lastRoll}
-            won={lastWon}
-          />
-        </div>
+        <div className="space-y-6">
+          <div className="bg-[#1a1f24] rounded-lg">
+            <div className="flex items-center gap-2 p-3 border-b border-[#2A2F34]">
+              <button
+                onClick={() => setIsAutoBetting(false)}
+                className={`px-4 py-2 rounded-md text-sm ${
+                  !isAutoBetting
+                    ? "bg-[#2A2F34] text-white"
+                    : "text-gray-400 hover:bg-[#2A2F34]/50"
+                }`}
+              >
+                Manual
+              </button>
+              <button
+                onClick={() => setIsAutoBetting(true)}
+                className={`px-4 py-2 rounded-md text-sm ${
+                  isAutoBetting
+                    ? "bg-[#2A2F34] text-white"
+                    : "text-gray-400 hover:bg-[#2A2F34]/50"
+                }`}
+              >
+                Auto
+              </button>
+            </div>
 
-        <Tabs defaultValue="manual" className="mt-8">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="manual" className="text-lg">Manual</TabsTrigger>
-            <TabsTrigger value="auto" className="text-lg">Auto</TabsTrigger>
-          </TabsList>
+            <div className="p-4">
+              {!isAutoBetting ? (
+                <BetControls
+                  betAmount={betAmount}
+                  setBetAmount={setBetAmount}
+                  isAuto={false}
+                  setIsAuto={() => {}}
+                  onBet={() => placeBet.mutate()}
+                  isLoading={placeBet.isPending}
+                  targetValue={targetValue}
+                  isOver={isOver}
+                />
+              ) : (
+                <AutoBetSettings
+                  settings={autoBetSettings}
+                  onSettingsChange={setAutoBetSettings}
+                  isRunning={isAutoBetting}
+                  onStartStop={handleStartStopAutoBet}
+                />
+              )}
+            </div>
+          </div>
 
-          <TabsContent value="manual" className="bg-[#1a1f24] rounded-lg p-6">
-            <BetControls
-              betAmount={betAmount}
-              setBetAmount={setBetAmount}
-              isAuto={false}
-              setIsAuto={() => {}}
-              onBet={() => placeBet.mutate()}
-              isLoading={placeBet.isPending}
-              targetValue={targetValue}
+          <div className="bg-[#1a1f24] rounded-lg p-6">
+            <GameSlider 
+              value={targetValue} 
+              onChange={setTargetValue}
               isOver={isOver}
+              setIsOver={setIsOver}
+              roll={lastRoll}
+              won={lastWon}
             />
-          </TabsContent>
+          </div>
 
-          <TabsContent value="auto" className="bg-[#1a1f24] rounded-lg p-6">
-            <AutoBetSettings
-              settings={autoBetSettings}
-              onSettingsChange={setAutoBetSettings}
-              isRunning={isAutoBetting}
-              onStartStop={handleStartStopAutoBet}
-            />
-          </TabsContent>
-        </Tabs>
-
-        <div className="mt-8 bg-[#1a1f24] rounded-lg p-6">
-          <GameHistory userId={1} />
+          <div className="bg-[#1a1f24] rounded-lg p-6">
+            <GameHistory userId={1} />
+          </div>
         </div>
       </div>
     </div>

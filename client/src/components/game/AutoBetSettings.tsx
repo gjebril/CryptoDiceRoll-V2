@@ -40,7 +40,7 @@ export default function AutoBetSettings({
           }
           disabled={isRunning}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-[#1A1F24] border-[#2A2F34]">
             <SelectValue placeholder="Select strategy" />
           </SelectTrigger>
           <SelectContent>
@@ -64,6 +64,7 @@ export default function AutoBetSettings({
             min={0}
             step={0.00000001}
             disabled={isRunning}
+            className="bg-[#1A1F24] border-[#2A2F34]"
           />
         </div>
 
@@ -78,6 +79,7 @@ export default function AutoBetSettings({
             min={0}
             step={0.00000001}
             disabled={isRunning}
+            className="bg-[#1A1F24] border-[#2A2F34]"
           />
         </div>
 
@@ -93,6 +95,7 @@ export default function AutoBetSettings({
               min={1}
               step={0.1}
               disabled={isRunning}
+              className="bg-[#1A1F24] border-[#2A2F34]"
             />
           </div>
         )}
@@ -111,6 +114,7 @@ export default function AutoBetSettings({
             step={0.00000001}
             placeholder="Optional"
             disabled={isRunning}
+            className="bg-[#1A1F24] border-[#2A2F34]"
           />
         </div>
 
@@ -128,6 +132,7 @@ export default function AutoBetSettings({
             step={0.00000001}
             placeholder="Optional"
             disabled={isRunning}
+            className="bg-[#1A1F24] border-[#2A2F34]"
           />
         </div>
 
@@ -144,6 +149,7 @@ export default function AutoBetSettings({
             min={1}
             placeholder="Optional"
             disabled={isRunning}
+            className="bg-[#1A1F24] border-[#2A2F34]"
           />
         </div>
 
@@ -161,6 +167,7 @@ export default function AutoBetSettings({
             max={10000}
             step={100}
             disabled={isRunning}
+            className="bg-[#1A1F24] border-[#2A2F34]"
           />
         </div>
       </div>

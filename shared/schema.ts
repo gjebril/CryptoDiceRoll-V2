@@ -1,31 +1,31 @@
-import { pgTable, text, serial, integer, decimal, boolean, timestamp } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
-  balance: text("balance").notNull().default("1000"),
-});
+// Type definitions for User
+export interface User {
+  id: number;
+  username: string;
+  password: string;
+  balance: string;
+}
 
-export const games = pgTable("games", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  betAmount: text("bet_amount").notNull(),
-  multiplier: text("multiplier").notNull(),
-  clientSeed: text("client_seed").notNull(),
-  serverSeed: text("server_seed").notNull(),
-  serverSeedHash: text("server_seed_hash").notNull(),
-  roll: text("roll").notNull(),
-  won: boolean("won").notNull(),
-  payout: text("payout").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+// Type definitions for Game
+export interface Game {
+  id: number;
+  userId: number;
+  betAmount: string;
+  multiplier: string;
+  clientSeed: string;
+  serverSeed: string;
+  serverSeedHash: string;
+  roll: string;
+  won: boolean;
+  payout: string;
+  createdAt: Date;
+}
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertUserSchema = z.object({
+  username: z.string(),
+  password: z.string()
 });
 
 export const placeBetSchema = z.object({
@@ -54,18 +54,15 @@ export const autoBetSettingsSchema = z.object({
   numberOfBets: z.number().int().positive().optional(),
   multiplier: z.number().positive().optional(),
   delayBetweenBets: z.number().int().min(500).max(10000),
-  // Strategy-specific settings
   strategyState: z.object({
-    sequence: z.array(z.number()).optional(), // For Fibonacci
-    stage: z.number().optional(), // For Oscar's Grind
-    winStreak: z.number().optional(), // For Oscar's Grind
+    sequence: z.array(z.number()).optional(),
+    stage: z.number().optional(),
+    winStreak: z.number().optional(),
     lossStreak: z.number().optional()
   }).optional()
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
-export type Game = typeof games.$inferSelect;
 export type PlaceBet = z.infer<typeof placeBetSchema>;
 export type AutoBetStrategy = z.infer<typeof autoBetStrategySchema>;
 export type AutoBetSettings = z.infer<typeof autoBetSettingsSchema>;

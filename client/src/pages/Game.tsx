@@ -124,7 +124,12 @@ export default function Game() {
           state.strategyState
         );
 
+        // Update strategy state immediately
         state.strategyState = result.newState;
+        setAutoBetSettings(prev => ({
+          ...prev,
+          strategyState: result.newState
+        }));
 
         const shouldStop =
           (autoBetSettings.stopOnProfit && new Decimal(state.currentProfit).gte(autoBetSettings.stopOnProfit)) ||
@@ -141,11 +146,16 @@ export default function Game() {
           });
         } else {
           setBetAmount(result.nextBet);
-          state.timeoutId = setTimeout(() => {
+          // Clear any existing timeout before setting a new one
+          if (state.timeoutId) {
+            clearTimeout(state.timeoutId);
+          }
+          const timeoutId = setTimeout(() => {
             if (isAutoBetting) {
               placeBet.mutate();
             }
           }, autoBetSettings.delayBetweenBets);
+          state.timeoutId = timeoutId;
         }
       }
 
@@ -197,6 +207,7 @@ export default function Game() {
         return;
       }
 
+      // Reset auto bet state
       autoBetStateRef.current = {
         betsPlaced: 0,
         startingBalance: balance,
@@ -208,11 +219,13 @@ export default function Game() {
       setBetAmount(autoBetSettings.baseBet);
       setIsAutoBetting(true);
 
-      autoBetStateRef.current.timeoutId = setTimeout(() => {
+      // Start first bet with a small delay
+      const timeoutId = setTimeout(() => {
         if (isAutoBetting) {
           placeBet.mutate();
         }
       }, 100);
+      autoBetStateRef.current.timeoutId = timeoutId;
     }
   }, [isAutoBetting, balance, autoBetSettings.baseBet, placeBet, toast, cleanupAutoBetting]);
 

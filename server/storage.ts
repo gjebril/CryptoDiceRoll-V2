@@ -1,4 +1,4 @@
-import { users, type User, type InsertUser, type Game } from "@shared/schema";
+import { type User, type InsertUser, type Game } from "@shared/schema";
 import { createHash } from "crypto";
 
 export interface IStorage {

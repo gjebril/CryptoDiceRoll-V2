@@ -1,6 +1,38 @@
+# Dependencies
 node_modules
+.pnp
+.pnp.js
+
+# Production build
 dist
-.DS_Store
+build
 server/public
+
+# Environment files
+.env*
+!.env.example
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System files
+.DS_Store
+*.pem
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Typescript
+*.tsbuildinfo
 vite.config.ts.*
+
+# Misc
 *.tar.gz
+.vercel
+.next
+coverage

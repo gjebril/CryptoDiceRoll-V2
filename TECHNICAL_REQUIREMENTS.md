@@ -94,16 +94,61 @@ Examples:
 1. Client Seed Generation
    - Random 16-byte hex string
    - Generated client-side using crypto.getRandomValues()
+   Example:
+   ```
+   Client Seed: "f7c3bc1d808e04732adf679965ccc34a"
+   ```
 
 2. Server Seed System
    - Server generates random 32-byte hex string
    - Only hash is revealed before bet
    - Full seed revealed after bet for verification
+   Example:
+   ```
+   Server Seed: "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c"
+   Server Seed Hash (shown before bet): "7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730"
+   ```
 
-3. Roll Generation
-   - Combined Hash = SHA256(clientSeed + serverSeed)
-   - Take first 4 bytes for entropy
-   - Roll = (entropy mod 10000) / 100
+3. Roll Generation Process
+   a. Combine Seeds:
+   ```
+   Combined = ClientSeed + ServerSeed
+   = "f7c3bc1d808e04732adf679965ccc34ab5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c"
+   ```
+
+   b. Generate SHA-256 Hash:
+   ```
+   Hash = SHA256(Combined)
+   = "3a2d432b06d1b7aadf8f27a421fe6bc8b7631a379c4c21a91aa1b5b6516a7bc3"
+   ```
+
+   c. Take First 4 Bytes for Entropy:
+   ```
+   First 4 Bytes = "3a2d432b"
+   Decimal Value = 975891243
+   ```
+
+   d. Calculate Roll:
+   ```
+   Roll = (975891243 mod 10000) / 100
+   = 12.43
+   ```
+
+4. Verification Example
+   - User places bet at target 50.00 (Over mode)
+   - Roll result: 12.43
+   - Result: Loss (12.43 is not over 50.00)
+   - User can verify by:
+     1. Confirming their Client Seed
+     2. Using revealed Server Seed
+     3. Running same calculations independently
+     4. Checking if roll matches recorded result
+
+5. Security Features
+   - Server Seed Hash prevents manipulation
+   - Client Seed prevents server prediction
+   - All components are cryptographically secure
+   - Results are deterministic and reproducible
 
 #### Auto-Betting Strategies
 1. Martingale

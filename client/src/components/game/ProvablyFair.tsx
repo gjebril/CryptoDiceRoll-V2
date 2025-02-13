@@ -120,6 +120,13 @@ export default function ProvablyFair({
 
           <div className="pt-4 border-t">
             <h4 className="font-semibold mb-4">Verify Previous Roll</h4>
+            <p className="text-sm text-gray-400 mb-4">
+              How verification works:
+              1. Before betting, you see your Client Seed and Server Seed Hash
+              2. After betting, the Server Seed is revealed
+              3. Enter both seeds below to verify the roll was fair
+              4. The result is calculated using SHA-256(ClientSeed + ServerSeed)
+            </p>
 
             <div className="space-y-4">
               <div>

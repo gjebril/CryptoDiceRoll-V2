@@ -1,3 +1,4 @@
+
 # Crypto Dice Game
 
 A provably fair cryptocurrency dice game with advanced betting mechanics, offering both manual and sophisticated auto-betting strategies.
@@ -37,7 +38,7 @@ npm install
 npm run dev
 ```
 
-The application will be available at `http://localhost:5000`.
+The application will be available at `http://0.0.0.0:5300`.
 
 ## Auto-betting Strategies
 

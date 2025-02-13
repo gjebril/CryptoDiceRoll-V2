@@ -39,8 +39,11 @@ export default function BetControls({
     }
   };
 
+  const HOUSE_EDGE_PERCENT = 1; // Configurable margin
+  const BASE = 100 - HOUSE_EDGE_PERCENT;
+  
   const calculateProfit = () => {
-    const multiplier = 99 / (isOver ? (99 - targetValue) : targetValue);
+    const multiplier = BASE / (isOver ? (99 - targetValue) : targetValue);
     return (betAmount * multiplier).toFixed(8);
   };
 

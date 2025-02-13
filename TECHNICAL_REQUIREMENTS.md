@@ -78,13 +78,17 @@ Examples:
    * Bet 1.00 at 25%: 1.00 * 3.96 = 3.96 payout
    * Bet 1.00 at 10%: 1.00 * 9.90 = 9.90 payout
 
-3. House Edge
-   * Built into the multiplier formula using 99 instead of 100
-   * Effective house edge = 1%
-   * Example:
+3. House Edge (Profit Margin)
+   * Configurable margin built into multiplier formula: (100 - margin) / win_chance
+   * Default margin = 1% (using 99/win_chance)
+   * Examples with 1% margin:
      - True fair multiplier at 50% = 100/50 = 2.00x
      - Actual multiplier = 99/50 = 1.98x
-     - Difference of 1% represents house edge
+     - Difference represents house edge
+   * Adjustable for different profit margins:
+     - 2% margin: 98/win_chance
+     - 3% margin: 97/win_chance
+     - 5% margin: 95/win_chance
 
 #### Provably Fair System
 1. Client Seed Generation

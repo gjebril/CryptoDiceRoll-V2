@@ -47,15 +47,44 @@
 ### 9. Game Logic & Calculations
 
 #### Probability System
-- Roll Range: 0-99.99
+- Roll Range: 0-99.99 (two decimal places precision)
 - Target Value: User-selected number between 1-98
-- Win Conditions: Roll > Target (Over mode) or Roll < Target (Under mode)
-- Win Chance: Over mode = (99 - target)%, Under mode = target%
+- Win Conditions: 
+  * Over mode: Win if Roll > Target
+  * Under mode: Win if Roll < Target
+- Win Chance Formulas:
+  * Over mode: (99 - target)%
+  * Under mode: target%
+
+Examples:
+1. Target = 50.00
+   * Over mode: Win chance = (99 - 50)% = 49%
+   * Under mode: Win chance = 50%
+
+2. Target = 75.00
+   * Over mode: Win chance = (99 - 75)% = 24%
+   * Under mode: Win chance = 75%
 
 #### Betting Calculations
-- Multiplier = 99 / win_chance
-- Payout = bet_amount * multiplier (on win)
-- House Edge: 1% (built into the 99/win_chance formula)
+1. Multiplier Formula = 99 / win_chance
+   Examples:
+   * 50% chance: 99/50 = 1.98x multiplier
+   * 25% chance: 99/25 = 3.96x multiplier
+   * 10% chance: 99/10 = 9.90x multiplier
+
+2. Payout Formula = bet_amount * multiplier
+   Examples:
+   * Bet 1.00 at 50%: 1.00 * 1.98 = 1.98 payout
+   * Bet 1.00 at 25%: 1.00 * 3.96 = 3.96 payout
+   * Bet 1.00 at 10%: 1.00 * 9.90 = 9.90 payout
+
+3. House Edge
+   * Built into the multiplier formula using 99 instead of 100
+   * Effective house edge = 1%
+   * Example:
+     - True fair multiplier at 50% = 100/50 = 2.00x
+     - Actual multiplier = 99/50 = 1.98x
+     - Difference of 1% represents house edge
 
 #### Provably Fair System
 1. Client Seed Generation

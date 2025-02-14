@@ -42,7 +42,9 @@ export default function GameSlider({
   };
 
   const calculateMultiplier = (targetValue: number, isOverMode: boolean) => {
-    return (99 / (isOverMode ? (99 - targetValue) : targetValue)).toFixed(4);
+    const HOUSE_EDGE_MULTIPLIER = 0.99; // 1% house edge
+    const fairMultiplier = 100 / (isOverMode ? (100 - targetValue) : targetValue);
+    return (fairMultiplier * HOUSE_EDGE_MULTIPLIER).toFixed(4);
   };
 
   const calculateWinChance = (targetValue: number, isOverMode: boolean) => {
@@ -53,9 +55,11 @@ export default function GameSlider({
     setMultiplierValue(newValue);
     const multiplier = parseFloat(newValue);
     if (!isNaN(multiplier) && multiplier > 1) {
+      const HOUSE_EDGE_MULTIPLIER = 0.99; // 1% house edge
+      const fairMultiplier = multiplier / HOUSE_EDGE_MULTIPLIER;
       const newTarget = isOver
-        ? 99 - (99 / multiplier)
-        : 99 / multiplier;
+        ? 100 - (100 / fairMultiplier)
+        : 100 / fairMultiplier;
       if (newTarget >= 1 && newTarget <= 98) {
         onChange(newTarget);
       }

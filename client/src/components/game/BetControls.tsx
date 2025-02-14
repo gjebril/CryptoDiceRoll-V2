@@ -40,11 +40,12 @@ export default function BetControls({
   };
 
   const HOUSE_EDGE_PERCENT = 1; // Configurable margin
-  const BASE = 100 - HOUSE_EDGE_PERCENT;
-  const MAX_ROLL = BASE;
+  const HOUSE_EDGE_MULTIPLIER = (100 - HOUSE_EDGE_PERCENT) / 100; // 0.99 for 1% edge
+  const MAX_ROLL = 100;
   
   const calculateProfit = () => {
-    const multiplier = BASE / (isOver ? (MAX_ROLL - targetValue) : targetValue);
+    const fairMultiplier = MAX_ROLL / (isOver ? (MAX_ROLL - targetValue) : targetValue);
+    const multiplier = fairMultiplier * HOUSE_EDGE_MULTIPLIER;
     return (betAmount * multiplier).toFixed(8);
   };
 

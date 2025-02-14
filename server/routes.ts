@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { placeBetSchema } from "@shared/schema";
 import { generateServerSeed, calculateServerSeedHash, calculateResult } from "./utils/crypto";
 import { Decimal } from "decimal.js";
+import { calculateMultiplier, calculatePayout } from "@shared/calculations";
 
 export function registerRoutes(app: Express): Server {
   app.post("/api/bet", async (req, res) => {

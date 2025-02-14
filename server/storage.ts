@@ -27,7 +27,7 @@ export class MemStorage implements IStorage {
       id: 1,
       username: "test",
       password: createHash("sha256").update("test").digest("hex"),
-      balance: "1000.00000000"
+      balance: "1000"
     });
   }
 

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +7,8 @@ import { calculateMultiplier, calculatePayout } from "@shared/calculations";
 interface BetControlsProps {
   betAmount: number;
   setBetAmount: (amount: number) => void;
+  isAuto: boolean;
+  setIsAuto: (auto: boolean) => void;
   onBet: () => void;
   isLoading: boolean;
   targetValue: number;
@@ -17,6 +18,8 @@ interface BetControlsProps {
 export default function BetControls({
   betAmount,
   setBetAmount,
+  isAuto,
+  setIsAuto,
   onBet,
   isLoading,
   targetValue,

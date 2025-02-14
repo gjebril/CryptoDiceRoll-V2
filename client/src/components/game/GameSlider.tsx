@@ -77,7 +77,7 @@ export default function GameSlider({
             }}
           >
             <div className="bg-[#1A1F24] rounded px-4 py-2 text-center" style={{ minWidth: '80px' }}>
-              <span className="text-[32px] text-white">{roll.toFixed(2)}</span>
+              <span className="text-[32px] text-white">{roll?.toFixed(2)}</span>
             </div>
             <div className="w-[1px] h-[60px] bg-red-500 mx-auto mt-2" />
           </div>

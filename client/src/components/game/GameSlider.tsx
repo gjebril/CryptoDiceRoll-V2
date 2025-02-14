@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { RotateCw } from "lucide-react";
+import { calculateMultiplier } from "@shared/calculations";
 
 interface GameSliderProps {
   value: number;
@@ -40,8 +41,6 @@ export default function GameSlider({
       onChange(parsed);
     }
   };
-
-  import { calculateMultiplier } from "@shared/calculations";
   
   const formatMultiplier = (targetValue: number, isOverMode: boolean) => {
     return calculateMultiplier(targetValue, isOverMode).toFixed(4);

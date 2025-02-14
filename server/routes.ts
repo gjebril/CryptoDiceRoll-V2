@@ -27,8 +27,8 @@ export function registerRoutes(app: Express): Server {
 
       const { roll, won } = calculateResult(clientSeed, serverSeed, targetValue, isOver);
 
-      const multiplier = new Decimal(99).dividedBy(isOver ? (99 - targetValue) : targetValue);
-      const payout = won ? new Decimal(betAmount).times(multiplier) : new Decimal(0);
+      const multiplier = new Decimal(calculateMultiplier(targetValue, isOver));
+      const payout = won ? new Decimal(calculatePayout(betAmount, multiplier)) : new Decimal(0);
 
       const newBalance = userBalance.minus(betAmount).plus(payout);
       await storage.updateUserBalance(userId, newBalance.toString());

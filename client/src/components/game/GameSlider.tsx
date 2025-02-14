@@ -41,10 +41,10 @@ export default function GameSlider({
     }
   };
 
-  const calculateMultiplier = (targetValue: number, isOverMode: boolean) => {
-    const HOUSE_EDGE_MULTIPLIER = 0.99; // 1% house edge
-    const fairMultiplier = 100 / (isOverMode ? (100 - targetValue) : targetValue);
-    return (fairMultiplier * HOUSE_EDGE_MULTIPLIER).toFixed(4);
+  import { calculateMultiplier } from "@shared/calculations";
+  
+  const formatMultiplier = (targetValue: number, isOverMode: boolean) => {
+    return calculateMultiplier(targetValue, isOverMode).toFixed(4);
   };
 
   const calculateWinChance = (targetValue: number, isOverMode: boolean) => {

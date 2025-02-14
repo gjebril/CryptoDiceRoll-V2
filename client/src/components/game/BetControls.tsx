@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
+import { calculateMultiplier, calculatePayout } from "@shared/calculations";
 
 interface BetControlsProps {
   betAmount: number;
@@ -38,8 +39,6 @@ export default function BetControls({
       setBetAmount(numericValue);
     }
   };
-
-  import { calculateMultiplier, calculatePayout } from "@shared/calculations";
   
   const calculateProfit = () => {
     const multiplier = calculateMultiplier(targetValue, isOver);

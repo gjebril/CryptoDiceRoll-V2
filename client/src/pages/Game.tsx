@@ -20,8 +20,11 @@ export default function Game() {
   const queryClient = useQueryClient();
 
   const balanceQuery = useQuery({
-    queryKey: ['/api/games/1'],
-    queryFn: () => apiRequest("GET", "/api/games/1"),
+    queryKey: ['user'],
+    queryFn: async () => {
+      const user = await apiRequest("GET", "/api/user/1");
+      return user;
+    }
   });
 
   const balance = balanceQuery.data?.balance || "0";

@@ -64,6 +64,15 @@ export function registerRoutes(app: Express): Server {
     res.json(games);
   });
 
+  app.get("/api/user/:userId", async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const user = await storage.getUser(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
